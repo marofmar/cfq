@@ -6,7 +6,7 @@ class WodData {
 }
 
 // sample data
-final List<WodData> wodData = [
+final List<WodData> wodDataList = [
   WodData(date: '2025-01-17', wod: [
     '5 Rounds',
     '40 Double Under',
