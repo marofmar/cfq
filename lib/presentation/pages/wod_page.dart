@@ -1,4 +1,3 @@
-import 'package:cfq/constants/colors.dart';
 import 'package:cfq/data/datasources/wod_data.dart';
 import 'package:cfq/domain/repositories/wod_repository.dart';
 import 'package:cfq/ui/widgets/calendar_utils.dart';
@@ -15,12 +14,14 @@ class WodPage extends StatefulWidget {
 class _WodPageState extends State<WodPage> {
   CalendarFormat _calendarFormat = CalendarFormat.week;
   DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
+  DateTime? _selectedDay; // selected는
 
   final WodRepository _wodRepository = WodRepository();
 
   @override
   Widget build(BuildContext context) {
+    final Future<List<WodData>> wodData =
+        _wodRepository.getWodByDate(_selectedDay?.toString() ?? '');
     return Scaffold(
       appBar: AppBar(
         title: Text('Wod Page'),
@@ -53,29 +54,28 @@ class _WodPageState extends State<WodPage> {
           Divider(),
           SizedBox(height: 10),
           Expanded(
-            child: FutureBuilder<List<WodData>>(
-              future:
-                  _wodRepository.getWodByDate(_selectedDay?.toString() ?? ''),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No WOD found for this date.'));
-                } else {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      final wod = snapshot.data![index];
-                      return ListTile(
-                        title: Text(wod.date),
-                        subtitle: Text(wod.wod.join('\n')),
-                      );
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Text('Workout of the Day'),
+                  FutureBuilder<List<WodData>>(
+                    future: wodData,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Column(
+                          children: [
+                            for (var wod in snapshot.data!)
+                              Text(wod.wod.join('\n')),
+                          ],
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+                      return CircularProgressIndicator();
                     },
-                  );
-                }
-              },
+                  ),
+                ],
+              ),
             ),
           ),
         ],

@@ -68,3 +68,9 @@ xcuserdata/
 *.pid
 
 .cursorrules
+
+# Firebase 설정 파일
+google-services.json
+GoogleService-Info.plist
+firepit-log.txt
+lib/firebase_options.dart
