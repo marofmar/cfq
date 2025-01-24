@@ -7,3 +7,4 @@ class WodApp extends StatelessWidget {
     ScreenUtil.init();
     return MaterialApp();
   }
+}

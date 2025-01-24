@@ -10,18 +10,18 @@ final sl = GetIt.instance;
 
 void init() {
   // Cubit
-  sl.registerFactory(() => WODCubit(sl()));
+  sl.registerFactory(() => WodCubit(sl()));
 
   // Use cases
   sl.registerLazySingleton(() => GetWodByDate(sl()));
 
   // Repository
   sl.registerLazySingleton<WodRepository>(
-    () => WODRepositoryImpl(sl()),
+    () => WodRepositoryImpl(sl()),
   );
 
   // Data sources
-  sl.registerLazySingleton<WODRemoteDataSource>(
-    () => WODRemoteDataSourceImpl(FirebaseFirestore.instance),
+  sl.registerLazySingleton<WodRemoteDataSource>(
+    () => WodRemoteDataSourceImpl(FirebaseFirestore.instance),
   );
 }
