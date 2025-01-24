@@ -1,20 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cfq/data/datasources/wod_data.dart';
+// TODO Implement this library.
+import 'package:cfq/domain/entities/wod_entity.dart';
 
-class WodRepository {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+// class WodRepository {
+//   Future<WodEntity?> getWodByDate(DateTime date) async {
+//     return await remoteDataSource.getWODByDate(date);
+//   }
+// }
 
-  Future<List<WodData>> getWodByDate(String date) async {
-    final querySnapshot = await _firestore
-        .collection('wods')
-        .where('date', isEqualTo: date)
-        .get();
-
-    return querySnapshot.docs.map((doc) {
-      return WodData(
-        date: doc['date'],
-        wod: List<String>.from(doc['wod']),
-      );
-    }).toList();
-  }
+abstract class WodRepository {
+  Future<WodEntity?> getWodByDate(DateTime date);
 }
