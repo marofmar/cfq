@@ -1,28 +1,47 @@
+import 'package:cfq/data/models/wod_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../domain/entities/wod_entity.dart';
 
-abstract class WODRemoteDataSource {
-  Future<Wod?> getWODByDate(DateTime date);
+abstract class WodRemoteDataSource {
+  Future<List<WodModel>> getWodByDate(DateTime date);
+  Future<WodModel> getWodBySpecificDate(String datePath);
 }
 
-class WODRemoteDataSourceImpl implements WODRemoteDataSource {
+class WodRemoteDataSourceImpl implements WodRemoteDataSource {
   final FirebaseFirestore firestore;
 
-  WODRemoteDataSourceImpl(this.firestore);
+  WodRemoteDataSourceImpl(this.firestore);
 
   @override
-  Future<WOD?> getWODByDate(DateTime date) async {
+  Future<List<WodModel>> getWodByDate(DateTime date) async {
     final snapshot =
         await firestore.collection('wods').where('date', isEqualTo: date).get();
 
-    if (snapshot.docs.isNotEmpty) {
-      final data = snapshot.docs.first.data();
-      return WOD(
-        id: snapshot.docs.first.id,
-        date: (data['date'] as Timestamp).toDate(),
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      return WodModel(
+        id: doc.id,
+        exercises: List<String>.from(data['exercises']),
+        level: Map<String, dynamic>.from(data['level']),
         description: data['description'] as String,
       );
+    }).toList();
+  }
+
+  @override
+  Future<WodModel> getWodBySpecificDate(String datePath) async {
+    final docRef = firestore.doc('wods/$datePath');
+    final docSnapshot = await docRef.get();
+
+    if (docSnapshot.exists) {
+      final data = docSnapshot.data()!;
+      return WodModel(
+        id: docSnapshot.id,
+        exercises: List<String>.from(data['exercises']),
+        level: Map<String, dynamic>.from(data['level']),
+        description: data['description'] as String,
+      );
+    } else {
+      throw Exception('Document does not exist');
     }
-    return null;
   }
 }

@@ -4,16 +4,18 @@ import 'data/datasources/wod_remote_data_source.dart';
 import 'data/repositories/wod_repository_impl.dart';
 import 'domain/repositories/wod_repository.dart';
 import 'domain/usecases/get_wod_by_date.dart';
+import 'domain/usecases/get_wod_by_specific_date.dart';
 import 'presentation/bloc/wod_cubit.dart';
 
 final sl = GetIt.instance;
 
 void init() {
   // Cubit
-  sl.registerFactory(() => WodCubit(sl()));
+  sl.registerFactory(() => WodCubit(sl(), sl()));
 
   // Use cases
   sl.registerLazySingleton(() => GetWodByDate(sl()));
+  sl.registerLazySingleton(() => GetWodBySpecificDate(sl()));
 
   // Repository
   sl.registerLazySingleton<WodRepository>(

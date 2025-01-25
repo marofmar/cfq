@@ -8,5 +8,6 @@ import 'package:cfq/domain/entities/wod_entity.dart';
 // }
 
 abstract class WodRepository {
-  Future<WodEntity?> getWodByDate(DateTime date);
+  Future<List<WodEntity>> getWodByDate(DateTime date);
+  Future<WodEntity> getWodBySpecificDate(String datePath);
 }

@@ -1,16 +1,3 @@
-// import '../entities/wod_entity.dart';
-// import '../../../domain/repositories/wod_repository.dart';
-
-// class GetWODByDate {
-//   final WODRepository repository;
-
-//   GetWODByDate(this.repository);
-
-//   Future<WOD?> call(DateTime date) async {
-//     return await repository.getWODByDate(date);
-//   }
-// }
-
 import 'package:cfq/domain/entities/app_error.dart';
 import 'package:cfq/domain/entities/no_params.dart';
 import 'package:cfq/domain/entities/wod_entity.dart';
@@ -25,6 +12,15 @@ class GetWodByDate extends Usecase<List<WodEntity>, NoParams> {
 
   @override
   Future<Either<AppError, List<WodEntity>>> call(NoParams params) async {
-    return await repository.getWodByDate(params.date);
+    try {
+      final result = await repository.getWodByDate(DateTime.now());
+      if (result.isNotEmpty) {
+        return Right(result);
+      } else {
+        return Left(AppError(message: 'No WODs found.'));
+      }
+    } catch (e) {
+      return Left(AppError(message: 'Error occurred: $e'));
+    }
   }
 }

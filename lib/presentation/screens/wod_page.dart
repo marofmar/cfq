@@ -1,37 +1,106 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/wod_cubit.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:cfq/presentation/bloc/wod_cubit.dart';
 
-class WODPage extends StatelessWidget {
-  const WODPage({Key? key}) : super(key: key);
+class WodPage extends StatefulWidget {
+  const WodPage({Key? key}) : super(key: key);
+
+  @override
+  _WodPageState createState() => _WodPageState();
+}
+
+class _WodPageState extends State<WodPage> {
+  DateTime _selectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('WOD')),
-      body: BlocBuilder<WODCubit, WODState>(
-        builder: (context, state) {
-          if (state is WODLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is WODLoaded) {
-            return Center(
-              child: Text(
-                state.wod.description,
-                style: Theme.of(context).textTheme.bodyLarge,
+      body: Column(
+        children: [
+          TableCalendar(
+            firstDay: DateTime.utc(2020, 1, 1),
+            lastDay: DateTime.utc(2030, 12, 31),
+            focusedDay: _selectedDate,
+            calendarFormat: CalendarFormat.week,
+            selectedDayPredicate: (day) => isSameDay(_selectedDate, day),
+            onDaySelected: (selectedDay, focusedDay) {
+              setState(() {
+                _selectedDate = selectedDay;
+              });
+              context.read<WodCubit>().fetchWodBySpecificDate(
+                  "${selectedDay.year}-${selectedDay.month.toString().padLeft(2, '0')}-${selectedDay.day.toString().padLeft(2, '0')}");
+            },
+            calendarStyle: CalendarStyle(
+              selectedDecoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
               ),
-            );
-          } else if (state is WODError) {
-            return Center(
-              child: SelectableText.rich(
-                TextSpan(
-                  text: state.message,
-                  style: const TextStyle(color: Colors.red),
-                ),
+              todayDecoration: BoxDecoration(
+                color: Colors.orange,
+                shape: BoxShape.circle,
               ),
-            );
-          }
-          return const Center(child: Text('Select a date to view WOD.'));
-        },
+            ),
+          ),
+          Expanded(
+            child: BlocBuilder<WodCubit, WodState>(
+              builder: (context, state) {
+                if (state is WodLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is WodLoaded) {
+                  return ListView.builder(
+                    itemCount: state.wods.length,
+                    itemBuilder: (context, index) {
+                      final wod = state.wods[index];
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 16),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'ID: ${wod.id}',
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Exercises: ${wod.exercises.join(', ')}',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Level: ${wod.level.entries.map((e) => '${e.key}: ${e.value}').join(', ')}',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Description: ${wod.description}',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                } else if (state is WodError) {
+                  return Center(
+                    child: SelectableText.rich(
+                      TextSpan(
+                        text: state.message,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  );
+                }
+                return const Center(child: Text('Select a date to view WOD.'));
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

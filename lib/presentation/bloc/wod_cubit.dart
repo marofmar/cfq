@@ -1,37 +1,58 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/wod_entity.dart';
-import '../../../domain/usecases/get_wod_by_date.dart';
+import 'package:cfq/domain/entities/app_error.dart';
+import 'package:cfq/domain/entities/no_params.dart';
+import 'package:cfq/domain/entities/wod_entity.dart';
+import 'package:cfq/domain/usecases/get_wod_by_date.dart';
+import 'package:cfq/domain/usecases/get_wod_by_specific_date.dart';
+import 'package:dartz/dartz.dart';
 
-class WODCubit extends Cubit<WODState> {
-  final GetWODByDate getWODByDate;
+class WodCubit extends Cubit<WodState> {
+  final GetWodByDate getWodByDate;
+  final GetWodBySpecificDate getWodBySpecificDate;
 
-  WODCubit(this.getWODByDate) : super(WODInitial());
+  WodCubit(this.getWodByDate, this.getWodBySpecificDate) : super(WodInitial());
 
-  Future<void> fetchWOD(DateTime date) async {
-    emit(WODLoading());
-    final wod = await getWODByDate(date);
-    if (wod != null) {
-      emit(WODLoaded(wod));
-    } else {
-      emit(WODError('No WOD found for the selected date.'));
-    }
+  Future<void> fetchWod(DateTime date) async {
+    emit(WodLoading());
+    final Either<AppError, List<WodEntity>> result =
+        await getWodByDate(NoParams());
+    result.fold(
+      (error) => emit(WodError(error.message)),
+      (wods) {
+        if (wods.isNotEmpty) {
+          emit(WodLoaded(wods));
+        } else {
+          emit(WodError('No WODs found.'));
+        }
+      },
+    );
+  }
+
+  Future<void> fetchWodBySpecificDate(String datePath) async {
+    emit(WodLoading());
+    final Either<AppError, WodEntity> result =
+        await getWodBySpecificDate(datePath);
+    result.fold(
+      (error) => emit(WodError(error.message)),
+      (wod) => emit(WodLoaded([wod])),
+    );
   }
 }
 
-abstract class WODState {}
+abstract class WodState {}
 
-class WODInitial extends WODState {}
+class WodInitial extends WodState {}
 
-class WODLoading extends WODState {}
+class WodLoading extends WodState {}
 
-class WODLoaded extends WODState {
-  final WOD wod;
+class WodLoaded extends WodState {
+  final List<WodEntity> wods;
 
-  WODLoaded(this.wod);
+  WodLoaded(this.wods);
 }
 
-class WODError extends WODState {
+class WodError extends WodState {
   final String message;
 
-  WODError(this.message);
+  WodError(this.message);
 }

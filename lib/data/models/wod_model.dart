@@ -21,8 +21,8 @@ class WodModel extends WodEntity {
   factory WodModel.fromJson(Map<String, dynamic> json) {
     return WodModel(
       id: json['id'],
-      exercises: json['exercises'],
-      level: json['level'],
+      exercises: List<String>.from(json['exercises']),
+      level: Map<String, dynamic>.from(json['level']),
       description: json['description'],
     );
   }
@@ -34,5 +34,14 @@ class WodModel extends WodEntity {
       'level': level,
       'description': description,
     };
+  }
+
+  WodEntity toEntity() {
+    return WodEntity(
+      id: id,
+      exercises: exercises,
+      level: level,
+      description: description,
+    );
   }
 }
