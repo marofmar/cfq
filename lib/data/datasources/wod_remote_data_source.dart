@@ -1,9 +1,11 @@
 import 'package:cfq/data/models/wod_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cfq/domain/entities/record_entity.dart';
 
 abstract class WodRemoteDataSource {
   Future<List<WodModel>> getWodByDate(DateTime date);
   Future<WodModel> getWodBySpecificDate(String datePath);
+  Future<bool> postRecord(RecordEntity record);
 }
 
 class WodRemoteDataSourceImpl implements WodRemoteDataSource {
@@ -42,6 +44,34 @@ class WodRemoteDataSourceImpl implements WodRemoteDataSource {
       );
     } else {
       throw Exception('Document does not exist');
+    }
+  }
+
+  @override
+  Future<bool> postRecord(RecordEntity record) async {
+    try {
+      final recordRef = firestore.collection('records').doc(record.wodId);
+
+      // Check if the document exists
+      final docSnapshot = await recordRef.get();
+      if (!docSnapshot.exists) {
+        // Create the document if it doesn't exist
+        await recordRef.set({});
+      }
+
+      // Update the document with the user's record
+      await recordRef.update({
+        record.name: {
+          'gender': record.gender,
+          'level': record.level,
+          'record': record.record,
+        }
+      });
+
+      return true;
+    } catch (e) {
+      print('Error posting record: $e');
+      return false;
     }
   }
 }
