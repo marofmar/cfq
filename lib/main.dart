@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'injection_container.dart' as di;
 import 'presentation/screens/wod_page.dart';
 import 'presentation/bloc/wod_cubit.dart';
+import 'presentation/bloc/record_cubit.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -20,14 +21,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'CrossFit App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: BlocProvider(
-        create: (_) => di.sl<WodCubit>(),
-        child: const WodPage(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<WodCubit>(
+          create: (_) => di.sl<WodCubit>(),
+        ),
+        BlocProvider<RecordCubit>(
+          create: (_) => di.sl<RecordCubit>(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'CrossFit App',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const WodPage(),
       ),
     );
   }
