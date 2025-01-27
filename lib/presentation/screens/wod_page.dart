@@ -64,8 +64,8 @@ class _WodPageState extends State<WodPage> {
             },
             calendarStyle: CalendarStyle(
               selectedDecoration: BoxDecoration(
-                color: AppColor.grey5,
-                shape: BoxShape.circle,
+                color: AppColor.mint,
+                shape: BoxShape.rectangle,
               ),
               todayDecoration: BoxDecoration(
                 color: AppColor.mint,
