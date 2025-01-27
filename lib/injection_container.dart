@@ -10,6 +10,11 @@ import 'domain/usecases/get_wod_by_specific_date.dart';
 import 'domain/usecases/post_record_by_specific_date.dart';
 import 'presentation/bloc/wod_cubit.dart';
 import 'presentation/bloc/record_cubit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'data/repositories/auth_repository_impl.dart';
+import 'domain/repositories/auth_repository.dart';
+import 'domain/usecases/verify_phone_number.dart';
+import 'domain/usecases/sign_in_with_credential.dart';
 
 final sl = GetIt.instance;
 
@@ -35,4 +40,9 @@ void init() {
   sl.registerLazySingleton<WodRemoteDataSource>(
     () => WodRemoteDataSourceImpl(FirebaseFirestore.instance),
   );
+
+  sl.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
+  sl.registerFactory(() => VerifyPhoneNumber(sl()));
+  sl.registerFactory(() => SignInWithCredential(sl()));
 }

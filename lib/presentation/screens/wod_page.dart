@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:cfq/presentation/bloc/wod_cubit.dart';
 import 'package:cfq/presentation/bloc/record_cubit.dart';
 import 'package:cfq/domain/entities/record_entity.dart';
+import 'package:cfq/presentation/screens/ranking_page.dart';
 
 class WodPage extends StatefulWidget {
   const WodPage({Key? key}) : super(key: key);
@@ -31,12 +32,25 @@ class _WodPageState extends State<WodPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('WOD')),
+      appBar: AppBar(
+        title: const Text('WOD'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.leaderboard),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const RankingPage()),
+              );
+            },
+          ),
+        ],
+      ),
       body: Column(
         children: [
           TableCalendar(
-            firstDay: DateTime.utc(2020, 1, 1),
-            lastDay: DateTime.utc(2030, 12, 31),
+            firstDay: DateTime.utc(2025, 1, 1),
+            lastDay: DateTime.utc(2025, 12, 31),
             focusedDay: _selectedDate,
             calendarFormat: CalendarFormat.week,
             selectedDayPredicate: (day) => isSameDay(_selectedDate, day),
