@@ -1,3 +1,4 @@
+import 'package:cfq/presentation/themes/theme_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -63,11 +64,11 @@ class _WodPageState extends State<WodPage> {
             },
             calendarStyle: CalendarStyle(
               selectedDecoration: BoxDecoration(
-                color: Colors.blue,
+                color: AppColor.grey5,
                 shape: BoxShape.circle,
               ),
               todayDecoration: BoxDecoration(
-                color: Colors.orange,
+                color: AppColor.mint,
                 shape: BoxShape.circle,
               ),
             ),
