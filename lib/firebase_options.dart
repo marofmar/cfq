@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCI7VZYYQ6eHTqA5ADk99Gr7_Kvg3Mi-L8',
-    appId: '1:393756932843:android:287ce57ad899063f501cae',
+    appId: '1:393756932843:android:00ef7e202edb0299501cae',
     messagingSenderId: '393756932843',
     projectId: 'thequeenfit-e9bc4',
     storageBucket: 'thequeenfit-e9bc4.firebasestorage.app',
@@ -59,10 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBCGk8KMsdLs1VP1zqEfVymKRdlfRUKw8M',
-    appId: '1:393756932843:ios:7e8976c2c4278482501cae',
+    appId: '1:393756932843:ios:45922e05551ad9ab501cae',
     messagingSenderId: '393756932843',
     projectId: 'thequeenfit-e9bc4',
     storageBucket: 'thequeenfit-e9bc4.firebasestorage.app',
-    iosBundleId: 'com.example.cfq',
+    iosBundleId: 'com.thequeenfit.cfq',
   );
+
 }

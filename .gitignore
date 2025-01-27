@@ -32,6 +32,11 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+ios/Flutter/Debug.xcconfig
+ios/Flutter/Release.xcconfig
+
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
 
 # Symbolication related
 app.*.symbols
@@ -57,9 +62,13 @@ coverage/
 *.lcov
 
 # Xcode-specific
+*.xcworkspace
 xcuserdata/
 *.xccheckout
 *.xcscmblueprint
+*.xcscheme
+DerivedData/
+build/
 
 # Temporary files
 *.tmp
@@ -70,3 +79,9 @@ xcuserdata/
 .cursorrules
 
 firebase.json
+
+# 빌드 시스템 파일 제외
+TARGET@*
+*.hash=*
+*.tmp
+
