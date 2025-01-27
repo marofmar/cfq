@@ -4,6 +4,7 @@ import 'package:cfq/domain/usecases/verify_phone_number.dart';
 import 'package:cfq/domain/usecases/sign_in_with_credential.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:get_it/get_it.dart';
+import 'package:cfq/presentation/screens/wod_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -90,7 +91,11 @@ class EnterPhoneNumberPageState extends State<LoginPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Phone number verified successfully.')),
       );
-      // Navigate to the next page or home screen
+      // Navigate to WodPage
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const WodPage()),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${e.toString()}')),
