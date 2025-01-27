@@ -21,6 +21,7 @@ class EnterPhoneNumberPageState extends State<LoginPage> {
       GetIt.instance<SignInWithCredential>();
   String _phoneNumber = '';
   String _verificationId = '';
+  bool _isCodeSent = false;
 
   void _submitPhoneNumber() async {
     if (_phoneNumber.isEmpty) {
@@ -45,6 +46,7 @@ class EnterPhoneNumberPageState extends State<LoginPage> {
         codeSent: (verificationId, resendToken) async {
           setState(() {
             _verificationId = verificationId;
+            _isCodeSent = true;
           });
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Verification code sent.')),
@@ -129,20 +131,22 @@ class EnterPhoneNumberPageState extends State<LoginPage> {
               onPressed: _submitPhoneNumber,
               child: const Text('Submit Phone Number'),
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _codeController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Verification Code',
+            if (_isCodeSent) ...[
+              const SizedBox(height: 16),
+              TextField(
+                controller: _codeController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Verification Code',
+                ),
+                keyboardType: TextInputType.number,
               ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _verifyCode,
-              child: const Text('Verify Code'),
-            ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _verifyCode,
+                child: const Text('Verify Code'),
+              ),
+            ],
           ],
         ),
       ),
