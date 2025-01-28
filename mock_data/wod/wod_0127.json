@@ -1,0 +1,17 @@
+{
+  "id": "2025-01-27",
+  "title": "PU_BJO_G2O",
+  "exercises": [
+    "EMOM 20'",
+    "1min: 15 Pull up",
+    "1min: 15 Box Jump",
+    "1min: 15 G2O",
+    "1min: Rest",
+    "Repeat 4 times"
+  ],
+  "level": {
+    "Rxd": "24kg/20kg",
+    "Scaled": "상담"
+  },
+  "description": "성공인 경우 S, 실패인 경우 F 표시"
+}
