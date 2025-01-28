@@ -16,7 +16,7 @@ class _SplashPageState extends State<SplashPage> {
     return Scaffold(
       backgroundColor: AppColor.black,
       body: Transform.translate(
-        offset: Offset(-40, 0),
+        offset: Offset(-45, 0),
         child: Lottie.asset(
           'assets/animations/upq.json',
           fit: BoxFit.cover,
