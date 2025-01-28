@@ -1,5 +1,6 @@
 import 'package:cfq/presentation/screens/home_page.dart';
 import 'package:cfq/presentation/screens/login_page.dart';
+import 'package:cfq/presentation/screens/ranking_page.dart';
 import 'package:cfq/presentation/screens/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +10,7 @@ import 'presentation/screens/wod_page.dart';
 import 'presentation/bloc/wod_cubit.dart';
 import 'presentation/bloc/record_cubit.dart';
 import 'firebase_options.dart';
+import 'presentation/screens/upload_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +40,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: SplashPage(),
+        home: RankingPage(),
       ),
     );
   }
