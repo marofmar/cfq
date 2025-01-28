@@ -4,6 +4,7 @@ import 'package:cfq/domain/usecases/verify_phone_number.dart';
 import 'package:cfq/domain/usecases/sign_in_with_credential.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:get_it/get_it.dart';
+import 'package:cfq/presentation/screens/wod_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -21,6 +22,7 @@ class EnterPhoneNumberPageState extends State<LoginPage> {
       GetIt.instance<SignInWithCredential>();
   String _phoneNumber = '';
   String _verificationId = '';
+  bool _isCodeSent = false;
 
   void _submitPhoneNumber() async {
     if (_phoneNumber.isEmpty) {
@@ -45,6 +47,7 @@ class EnterPhoneNumberPageState extends State<LoginPage> {
         codeSent: (verificationId, resendToken) async {
           setState(() {
             _verificationId = verificationId;
+            _isCodeSent = true;
           });
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Verification code sent.')),
@@ -88,7 +91,11 @@ class EnterPhoneNumberPageState extends State<LoginPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Phone number verified successfully.')),
       );
-      // Navigate to the next page or home screen
+      // Navigate to WodPage
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const WodPage()),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${e.toString()}')),
@@ -129,20 +136,22 @@ class EnterPhoneNumberPageState extends State<LoginPage> {
               onPressed: _submitPhoneNumber,
               child: const Text('Submit Phone Number'),
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _codeController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Verification Code',
+            if (_isCodeSent) ...[
+              const SizedBox(height: 16),
+              TextField(
+                controller: _codeController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Verification Code',
+                ),
+                keyboardType: TextInputType.number,
               ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _verifyCode,
-              child: const Text('Verify Code'),
-            ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _verifyCode,
+                child: const Text('Verify Code'),
+              ),
+            ],
           ],
         ),
       ),
