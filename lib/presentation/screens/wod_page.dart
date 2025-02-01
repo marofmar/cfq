@@ -1,3 +1,4 @@
+import 'package:cfq/presentation/bloc/date_cubit.dart';
 import 'package:cfq/presentation/themes/theme_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,29 +50,35 @@ class _WodPageState extends State<WodPage> {
       ),
       body: Column(
         children: [
-          TableCalendar(
-            firstDay: DateTime.utc(2025, 1, 1),
-            lastDay: DateTime.utc(2025, 12, 31),
-            focusedDay: _selectedDate,
-            calendarFormat: CalendarFormat.week,
-            selectedDayPredicate: (day) => isSameDay(_selectedDate, day),
-            onDaySelected: (selectedDay, focusedDay) {
-              setState(() {
-                _selectedDate = selectedDay;
-              });
-              context.read<WodCubit>().fetchWodBySpecificDate(
-                  "${selectedDay.year}-${selectedDay.month.toString().padLeft(2, '0')}-${selectedDay.day.toString().padLeft(2, '0')}");
+          BlocBuilder<DateCubit, DateTime>(
+            builder: (context, state) {
+              print('Current focused day: $state');
+              return TableCalendar(
+                firstDay: DateTime.utc(2025, 1, 1),
+                lastDay: DateTime.utc(2025, 12, 31),
+                focusedDay: state,
+                calendarFormat: CalendarFormat.week,
+                selectedDayPredicate: (day) => isSameDay(state, day),
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(() {
+                    _selectedDate = selectedDay;
+                    context.read<DateCubit>().updateDate(selectedDay);
+                  });
+                  context.read<WodCubit>().fetchWodBySpecificDate(
+                      "${selectedDay.year}-${selectedDay.month.toString().padLeft(2, '0')}-${selectedDay.day.toString().padLeft(2, '0')}");
+                },
+                calendarStyle: CalendarStyle(
+                  selectedDecoration: BoxDecoration(
+                    color: AppColor.mint,
+                    shape: BoxShape.rectangle,
+                  ),
+                  todayDecoration: BoxDecoration(
+                    color: AppColor.mint,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              );
             },
-            calendarStyle: CalendarStyle(
-              selectedDecoration: BoxDecoration(
-                color: AppColor.mint,
-                shape: BoxShape.rectangle,
-              ),
-              todayDecoration: BoxDecoration(
-                color: AppColor.mint,
-                shape: BoxShape.circle,
-              ),
-            ),
           ),
           Expanded(
             child: BlocBuilder<WodCubit, WodState>(

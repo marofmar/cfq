@@ -11,6 +11,7 @@ import 'presentation/bloc/wod_cubit.dart';
 import 'presentation/bloc/record_cubit.dart';
 import 'firebase_options.dart';
 import 'presentation/screens/upload_screen.dart';
+import 'package:cfq/presentation/bloc/date_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,13 +35,16 @@ class MyApp extends StatelessWidget {
         BlocProvider<RecordCubit>(
           create: (_) => di.sl<RecordCubit>(),
         ),
+        BlocProvider<DateCubit>(
+          create: (context) => DateCubit(),
+        ),
       ],
       child: MaterialApp(
         title: 'CrossFit App',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: RankingPage(),
+        home: WodPage(),
       ),
     );
   }
