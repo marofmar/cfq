@@ -7,6 +7,7 @@ import 'package:cfq/presentation/bloc/wod_cubit.dart';
 import 'package:cfq/presentation/bloc/record_cubit.dart';
 import 'package:cfq/domain/entities/record_entity.dart';
 import 'package:cfq/presentation/screens/ranking_page.dart';
+import 'package:cfq/presentation/widgets/record_input_form.dart';
 
 class WodPage extends StatefulWidget {
   const WodPage({Key? key}) : super(key: key);
@@ -29,6 +30,13 @@ class _WodPageState extends State<WodPage> {
       _selectedGender = 'male';
       _selectedLevel = 'rxd';
     });
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _recordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -137,78 +145,36 @@ class _WodPageState extends State<WodPage> {
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'Name'),
-                ),
-                const SizedBox(height: 8),
-                DropdownButtonFormField<String>(
-                  value: _selectedGender,
-                  items: ['male', 'female']
-                      .map((gender) => DropdownMenuItem(
-                            value: gender,
-                            child: Text(gender),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedGender = value!;
-                    });
-                  },
-                  decoration: const InputDecoration(labelText: 'Gender'),
-                ),
-                const SizedBox(height: 8),
-                DropdownButtonFormField<String>(
-                  value: _selectedLevel,
-                  items: ['rxd', 'a', 'b', 'c']
-                      .map((level) => DropdownMenuItem(
-                            value: level,
-                            child: Text(level),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedLevel = value!;
-                    });
-                  },
-                  decoration: const InputDecoration(labelText: 'Level'),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: _recordController,
-                  decoration: const InputDecoration(labelText: 'Record'),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    // Format the selected date as a string to use as the wodId
-                    final wodId =
-                        "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}";
+          RecordInputForm(
+            nameController: _nameController,
+            recordController: _recordController,
+            selectedGender: _selectedGender,
+            selectedLevel: _selectedLevel,
+            onGenderChanged: (value) {
+              setState(() {
+                _selectedGender = value;
+              });
+            },
+            onLevelChanged: (value) {
+              setState(() {
+                _selectedLevel = value;
+              });
+            },
+            onSubmit: () {
+              final wodId =
+                  "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}";
 
-                    // Handle the submission of the record
-                    final record = RecordEntity(
-                      name: _nameController.text,
-                      gender: _selectedGender,
-                      level: _selectedLevel,
-                      wodId: wodId, // Use the formatted date as the wodId
-                      record: _recordController.text,
-                    );
+              final record = RecordEntity(
+                name: _nameController.text,
+                gender: _selectedGender,
+                level: _selectedLevel,
+                wodId: wodId,
+                record: _recordController.text,
+              );
 
-                    // Call the method to post the record
-                    context.read<RecordCubit>().postRecord(record);
-
-                    // Reset the fields after submission
-                    _resetFields();
-                  },
-                  child: const Text('Submit Record'),
-                ),
-              ],
-            ),
+              context.read<RecordCubit>().postRecord(record);
+              _resetFields();
+            },
           ),
           BlocListener<RecordCubit, RecordState>(
             listener: (context, state) {
