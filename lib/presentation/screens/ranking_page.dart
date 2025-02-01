@@ -41,31 +41,31 @@ class _RankingPageState extends State<RankingPage> {
             ),
           ),
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
+            child: StreamBuilder<DocumentSnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('records')
                   .doc(
                       "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}")
-                  .collection('entries')
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                if (!snapshot.hasData || !snapshot.data!.exists) {
                   return const Center(
                       child: Text('No records found for this date.'));
                 }
 
-                final records = snapshot.data!.docs;
+                final recordsData =
+                    snapshot.data!.data() as Map<String, dynamic>;
 
                 return ListView.builder(
-                  itemCount: records.length,
+                  itemCount: recordsData.length,
                   itemBuilder: (context, index) {
-                    final record =
-                        records[index].data() as Map<String, dynamic>;
+                    final name = recordsData.keys.elementAt(index);
+                    final record = recordsData[name] as Map<String, dynamic>;
                     return ListTile(
-                      title: Text(record['name']),
+                      title: Text(name),
                       subtitle: Text('Score: ${record['record']}'),
                       trailing: Text('Level: ${record['level']}'),
                     );
