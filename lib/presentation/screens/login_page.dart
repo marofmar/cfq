@@ -1,10 +1,10 @@
+import 'package:cfq/presentation/screens/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cfq/domain/usecases/verify_phone_number.dart';
 import 'package:cfq/domain/usecases/sign_in_with_credential.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:get_it/get_it.dart';
-import 'package:cfq/presentation/screens/wod_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -94,7 +94,7 @@ class EnterPhoneNumberPageState extends State<LoginPage> {
       // Navigate to WodPage
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const WodPage()),
+        MaterialPageRoute(builder: (context) => HomePage()),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
