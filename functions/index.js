@@ -35,7 +35,6 @@ function compareRecords(a, b) {
   const parsedB = parseRecord(b.record);
 
   if (parsedA.type !== parsedB.type) {
-    // 다른 형식 간의 비교 로직 (필요에 따라 정의)
     return parsedA.type.localeCompare(parsedB.type);
   }
 
