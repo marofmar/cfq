@@ -48,9 +48,15 @@ class _WodPageState extends State<WodPage> {
           IconButton(
             icon: const Icon(Icons.leaderboard),
             onPressed: () {
+              final selectedDate = context.read<DateCubit>().state;
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const RankingPage()),
+                MaterialPageRoute(
+                  builder: (context) => RankingPage(
+                    date:
+                        "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}",
+                  ),
+                ),
               );
             },
           ),
@@ -152,12 +158,13 @@ class _WodPageState extends State<WodPage> {
             selectedLevel: _selectedLevel,
             onGenderChanged: (value) {
               setState(() {
-                _selectedGender = value;
+                _selectedGender = value ??
+                    ''; // Handle null case by providing empty string default
               });
             },
             onLevelChanged: (value) {
               setState(() {
-                _selectedLevel = value;
+                _selectedLevel = value ?? '';
               });
             },
             onSubmit: () {

@@ -7,23 +7,26 @@ admin.initializeApp();
 const db = admin.firestore();
 
 function parseRecord(record) {
-  if (record.includes("R")) {
+  // Remove all spaces from the record string
+  const sanitizedRecord = record.replace(/\s+/g, "");
+
+  if (sanitizedRecord.includes("R")) {
     // "5R10" 형식
-    const [rounds, reps] = record.split("R").map(Number);
+    const [rounds, reps] = sanitizedRecord.split("R").map(Number);
     return { type: "rounds", value: rounds * 1000 + reps }; // 가중치를 주어 정렬
-  } else if (record.includes(":")) {
+  } else if (sanitizedRecord.includes(":")) {
     // "18:10" 형식
-    const [minutes, seconds] = record.split(":").map(Number);
+    const [minutes, seconds] = sanitizedRecord.split(":").map(Number);
     return { type: "time", value: minutes * 60 + seconds };
-  } else if (record === "S") {
+  } else if (sanitizedRecord === "S") {
     // "S" 형식
     return { type: "status", value: 1 }; // 성공
-  } else if (record === "F") {
+  } else if (sanitizedRecord === "F") {
     // "F" 형식
     return { type: "status", value: 0 }; // 실패
   } else {
     // 숫자 형식
-    return { type: "number", value: Number(record) };
+    return { type: "number", value: Number(sanitizedRecord) };
   }
 }
 
@@ -36,7 +39,13 @@ function compareRecords(a, b) {
     return parsedA.type.localeCompare(parsedB.type);
   }
 
-  return parsedA.value - parsedB.value;
+  // For time format, smaller values are better (ascending order)
+  if (parsedA.type === "time") {
+    return parsedA.value - parsedB.value;
+  }
+
+  // For other formats, larger values are better (descending order)
+  return parsedB.value - parsedA.value;
 }
 
 // Firestore 트리거 함수

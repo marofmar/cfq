@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
           create: (_) => di.sl<RecordCubit>(),
         ),
         BlocProvider<DateCubit>(
-          create: (context) => DateCubit(),
+          create: (_) => DateCubit(),
         ),
       ],
       child: MaterialApp(
@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: SplashPage(),
+        home: HomePage(),
       ),
     );
   }

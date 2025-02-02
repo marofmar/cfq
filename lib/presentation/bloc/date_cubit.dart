@@ -1,9 +1,7 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc/bloc.dart';
 
 class DateCubit extends Cubit<DateTime> {
   DateCubit() : super(DateTime.now());
 
-  void updateDate(DateTime newDate) {
-    emit(newDate);
-  }
+  void updateDate(DateTime date) => emit(date);
 }

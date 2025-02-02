@@ -8,22 +8,25 @@ import 'package:cfq/presentation/bloc/navigation_cubit.dart';
 import 'package:cfq/presentation/widgets/custom_bottom_navigation_bar.dart';
 
 class HomePage extends StatelessWidget {
-  static const List<Widget> _pages = <Widget>[
-    WodPage(),
-    RankingPage(),
-    MyPage(),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => NavigationCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => DateCubit()),
+        BlocProvider(create: (_) => NavigationCubit()),
+      ],
       child: Scaffold(
         body: BlocBuilder<NavigationCubit, int>(
           builder: (context, state) {
             return IndexedStack(
               index: state,
-              children: _pages,
+              children: [
+                WodPage(),
+                RankingPage(
+                  date: context.read<DateCubit>().state.toIso8601String(),
+                ),
+                MyPage(),
+              ],
             );
           },
         ),
