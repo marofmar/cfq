@@ -51,7 +51,10 @@ class _WodPageState extends State<WodPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const RankingPage(),
+                  builder: (context) => BlocProvider.value(
+                    value: context.read<DateCubit>(),
+                    child: const RankingPage(),
+                  ),
                 ),
               );
             },

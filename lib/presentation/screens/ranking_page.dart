@@ -13,72 +13,78 @@ class RankingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // DateCubit의 현재 상태를 사용
-    final currentDate = context.read<DateCubit>().state;
-
-    return BlocProvider(
-      create: (context) => RankingCubit(
-        GetIt.I<GetRankingBySpecificDate>(),
-      )..fetchRanking(
-          "${currentDate.year}-${currentDate.month.toString().padLeft(2, '0')}-${currentDate.day.toString().padLeft(2, '0')}"),
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Ranking')),
-        body: Column(
-          children: [
-            BlocBuilder<DateCubit, DateTime>(
-              builder: (context, selectedDate) {
-                return TableCalendar(
-                  firstDay: DateTime.utc(2025, 1, 1),
-                  lastDay: DateTime.utc(2025, 12, 31),
-                  focusedDay: selectedDate,
-                  calendarFormat: CalendarFormat.week,
-                  selectedDayPredicate: (day) => isSameDay(selectedDate, day),
-                  onDaySelected: (selectedDay, focusedDay) {
-                    context.read<DateCubit>().updateDate(selectedDay);
-                    final formattedDate =
-                        "${selectedDay.year}-${selectedDay.month.toString().padLeft(2, '0')}-${selectedDay.day.toString().padLeft(2, '0')}";
-                    context.read<RankingCubit>().fetchRanking(formattedDate);
-                  },
-                  calendarStyle: CalendarStyle(
-                    selectedDecoration: BoxDecoration(
-                      color: AppColor.mint,
-                      shape: BoxShape.rectangle,
-                    ),
-                    todayDecoration: BoxDecoration(
-                      color: AppColor.mint,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                );
-              },
+    // BlocBuilder를 사용하여 초기 데이터 로드
+    return BlocBuilder<DateCubit, DateTime>(
+      builder: (context, currentDate) {
+        return BlocProvider(
+          create: (context) => RankingCubit(
+            GetIt.I<GetRankingBySpecificDate>(),
+          )..fetchRanking(
+              "${currentDate.year}-${currentDate.month.toString().padLeft(2, '0')}-${currentDate.day.toString().padLeft(2, '0')}",
             ),
-            Expanded(
-              child: BlocBuilder<RankingCubit, RankingState>(
-                builder: (context, state) {
-                  if (state.isLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state.error.isNotEmpty) {
-                    return Center(child: Text('Error: ${state.error}'));
-                  } else {
-                    return ListView.builder(
-                      itemCount: state.rankings.length,
-                      itemBuilder: (context, index) {
-                        final ranking = state.rankings[index];
-                        return ListTile(
-                          leading: Text('${ranking.rank}'),
-                          title: Text(ranking.name),
-                          subtitle: Text('Record: ${ranking.record}'),
-                          trailing: Text('Level: ${ranking.level}'),
-                        );
+          child: Scaffold(
+            appBar: AppBar(title: const Text('Ranking')),
+            body: Column(
+              children: [
+                BlocBuilder<DateCubit, DateTime>(
+                  builder: (context, selectedDate) {
+                    return TableCalendar(
+                      firstDay: DateTime.utc(2025, 1, 1),
+                      lastDay: DateTime.utc(2025, 12, 31),
+                      focusedDay: selectedDate,
+                      calendarFormat: CalendarFormat.week,
+                      selectedDayPredicate: (day) =>
+                          isSameDay(selectedDate, day),
+                      onDaySelected: (selectedDay, focusedDay) {
+                        context.read<DateCubit>().updateDate(selectedDay);
+                        final formattedDate =
+                            "${selectedDay.year}-${selectedDay.month.toString().padLeft(2, '0')}-${selectedDay.day.toString().padLeft(2, '0')}";
+                        context
+                            .read<RankingCubit>()
+                            .fetchRanking(formattedDate);
                       },
+                      calendarStyle: CalendarStyle(
+                        selectedDecoration: BoxDecoration(
+                          color: AppColor.mint,
+                          shape: BoxShape.rectangle,
+                        ),
+                        todayDecoration: BoxDecoration(
+                          color: AppColor.mint,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
                     );
-                  }
-                },
-              ),
+                  },
+                ),
+                Expanded(
+                  child: BlocBuilder<RankingCubit, RankingState>(
+                    builder: (context, state) {
+                      if (state.isLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state.error.isNotEmpty) {
+                        return Center(child: Text('Error: ${state.error}'));
+                      } else {
+                        return ListView.builder(
+                          itemCount: state.rankings.length,
+                          itemBuilder: (context, index) {
+                            final ranking = state.rankings[index];
+                            return ListTile(
+                              leading: Text('${ranking.rank}'),
+                              title: Text(ranking.name),
+                              subtitle: Text('Record: ${ranking.record}'),
+                              trailing: Text('Level: ${ranking.level}'),
+                            );
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
