@@ -85,5 +85,34 @@ TARGET@*
 *.hash=*
 *.tmp
 
-node_modules
+
+# Firebase Functions 관련
+functions/node_modules
+functions/package-lock.json
+functions/lib
+functions/dist
+
+# Firebase CLI 설정
+.firebase/
+.firebase.json
+firebaserc
+
+# 환경 변수 파일
+.env
+.env.*
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS 및 IDE 파일
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+node_modules/
+
 

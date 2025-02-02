@@ -1,0 +1,28 @@
+{
+  "id": "2025-01-24",
+  "title": "DIPS_KBS_BJ",
+  "exercises": [
+    "AMRAP 15min",
+    "2 Dips(1R)",
+    "8 USA. Kettlebell Swing",
+    "12 Box Jump",
+    "",
+    "4 Dips(2R)",
+    "8 Kettlebell Swing",
+    "12 Box Jump",
+    "",
+    "6 Dips(3R)",
+    "8 Kettlebell Swing",
+    "12 Box Jump",
+    "",
+    ".",
+    ".",
+    "."
+  ],
+  "level": {
+    "Rxd": "24kg/20kg",
+    "Advanced": "20kg/16kg",
+    "Beginner": "16kg/12kg",
+    "C": "상담"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "2025-01-23": {
+    "고영훈": { "gender": "male", "level": "rxd", "record": "10R 12" },
+    "김영준": { "gender": "male", "level": "rxd", "record": "9R" }
+  },
+  "2025-01-24": {
+    "성은": { "gender": "여", "level": "rxd", "record": "8R3" },
+    "태연": { "gender": "남", "level": "rxd", "record": "7R2" },
+    "선형": { "gender": "여", "level": "a", "record": "10R" },
+    "혜란": { "gender": "여", "level": "a", "record": "9R26" },
+    "혜린": { "gender": "여", "level": "b", "record": "5R" },
+    "연주": { "gender": "여", "level": "b", "record": "8R" },
+    "민지2": { "gender": "여", "level": "c", "record": "8R8" },
+    "하연": { "gender": "여", "level": "c", "record": "8R3" }
+  },
+
+  "2025-01-27": {
+    "다령": { "gender": "여", "level": "rxd", "record": "f" },
+    "경훈": { "gender": "남", "level": "rxd", "record": "f" },
+    "순우": { "gender": "남", "level": "rxd", "record": "f" },
+    "아이단": { "gender": "여", "level": "scaled", "record": "s" },
+    "재현": { "gender": "남", "level": "scaled", "record": "s" },
+    "원웅": { "gender": "남", "level": "scaled", "record": "s" }
+  }
+}

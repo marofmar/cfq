@@ -15,7 +15,8 @@ class GetWodBySpecificDate extends Usecase<WodEntity, String> {
       final wodEntity = await repository.getWodBySpecificDate(datePath);
       return Right(wodEntity);
     } catch (e) {
-      return Left(AppError(message: 'Error fetching WOD: $e'));
+      print(e);
+      return Left(AppError(message: 'WOD 없어요. 좀 쉬세요!'));
     }
   }
 }

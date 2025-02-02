@@ -6,6 +6,7 @@ class AppColor {
   static const Color white = Color(0xfffcfcfc);
   static const Color black = Color(0xff050505);
   static const Color mint = Color(0xff71C9CE);
+  static const Color purple = Color(0xffBD6DCE);
   static const Color grey1 = Color(0xffeaeaea);
   static const Color grey2 = Color(0xffd9d9d9);
   static const Color grey3 = Color(0xffc6c6c6);
