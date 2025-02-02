@@ -48,14 +48,10 @@ class _WodPageState extends State<WodPage> {
           IconButton(
             icon: const Icon(Icons.leaderboard),
             onPressed: () {
-              final selectedDate = context.read<DateCubit>().state;
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => RankingPage(
-                    date:
-                        "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}",
-                  ),
+                  builder: (context) => const RankingPage(),
                 ),
               );
             },

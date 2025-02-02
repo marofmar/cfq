@@ -9,13 +9,11 @@ import 'package:cfq/presentation/bloc/date_cubit.dart';
 import 'package:cfq/presentation/themes/theme_color.dart';
 
 class RankingPage extends StatelessWidget {
-  final String date;
-
-  const RankingPage({Key? key, required this.date}) : super(key: key);
+  const RankingPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // 페이지가 생성될 때 현재 DateCubit의 상태를 사용
+    // DateCubit의 현재 상태를 사용
     final currentDate = context.read<DateCubit>().state;
 
     return BlocProvider(
@@ -29,7 +27,6 @@ class RankingPage extends StatelessWidget {
           children: [
             BlocBuilder<DateCubit, DateTime>(
               builder: (context, selectedDate) {
-                print('Current focused day in RankingPage: $selectedDate');
                 return TableCalendar(
                   firstDay: DateTime.utc(2025, 1, 1),
                   lastDay: DateTime.utc(2025, 12, 31),
@@ -37,10 +34,7 @@ class RankingPage extends StatelessWidget {
                   calendarFormat: CalendarFormat.week,
                   selectedDayPredicate: (day) => isSameDay(selectedDate, day),
                   onDaySelected: (selectedDay, focusedDay) {
-                    // DateCubit 상태 업데이트
                     context.read<DateCubit>().updateDate(selectedDay);
-
-                    // 선택된 날짜에 대한 랭킹 데이터 가져오기
                     final formattedDate =
                         "${selectedDay.year}-${selectedDay.month.toString().padLeft(2, '0')}-${selectedDay.day.toString().padLeft(2, '0')}";
                     context.read<RankingCubit>().fetchRanking(formattedDate);

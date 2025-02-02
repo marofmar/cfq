@@ -22,9 +22,7 @@ class HomePage extends StatelessWidget {
               index: state,
               children: [
                 WodPage(),
-                RankingPage(
-                  date: context.read<DateCubit>().state.toIso8601String(),
-                ),
+                RankingPage(),
                 MyPage(),
               ],
             );
