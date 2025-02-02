@@ -85,6 +85,7 @@ TARGET@*
 *.hash=*
 *.tmp
 
+
 # Firebase Functions 관련
 functions/node_modules
 functions/package-lock.json
@@ -113,3 +114,5 @@ Thumbs.db
 *.swp
 
 node_modules/
+
+
