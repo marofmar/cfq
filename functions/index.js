@@ -1,25 +1,57 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+const { onDocumentWritten } = require("firebase-functions/v2/firestore");
 
 // Firebase Admin 초기화
 admin.initializeApp();
-
 const db = admin.firestore();
 
+function parseRecord(record) {
+  if (record.includes("R")) {
+    // "5R10" 형식
+    const [rounds, reps] = record.split("R").map(Number);
+    return { type: "rounds", value: rounds * 1000 + reps }; // 가중치를 주어 정렬
+  } else if (record.includes(":")) {
+    // "18:10" 형식
+    const [minutes, seconds] = record.split(":").map(Number);
+    return { type: "time", value: minutes * 60 + seconds };
+  } else if (record === "S") {
+    // "S" 형식
+    return { type: "status", value: 1 }; // 성공
+  } else if (record === "F") {
+    // "F" 형식
+    return { type: "status", value: 0 }; // 실패
+  } else {
+    // 숫자 형식
+    return { type: "number", value: Number(record) };
+  }
+}
+
+function compareRecords(a, b) {
+  const parsedA = parseRecord(a.record);
+  const parsedB = parseRecord(b.record);
+
+  if (parsedA.type !== parsedB.type) {
+    // 다른 형식 간의 비교 로직 (필요에 따라 정의)
+    return parsedA.type.localeCompare(parsedB.type);
+  }
+
+  return parsedA.value - parsedB.value;
+}
+
 // Firestore 트리거 함수
-exports.updateRanking = functions.firestore
-  .document("records/{recordId}")
-  .onWrite(async (change, context) => {
-    const recordId = context.params.recordId;
-    const recordsData = change.after.exists ? change.after.data() : null;
+exports.updateRanking = onDocumentWritten(
+  "records/{recordId}",
+  async (event) => {
+    const recordId = event.params.recordId;
+    const recordsData = event.data?.after?.data() || null;
 
     if (!recordsData) {
       console.log(`Document ${recordId} was deleted.`);
-      return null;
+      return;
     }
 
     try {
-      // 데이터 처리 로직
       const users = Object.entries(recordsData).map(([name, data]) => ({
         name,
         record: data.record,
@@ -27,11 +59,7 @@ exports.updateRanking = functions.firestore
         gender: data.gender,
       }));
 
-      users.sort((a, b) => {
-        const [aRounds, aReps] = a.record.split("R").map(Number);
-        const [bRounds, bReps] = b.record.split("R").map(Number);
-        return bRounds - aRounds || bReps - aReps;
-      });
+      users.sort(compareRecords);
 
       const rankedUsers = users.map((user, index) => ({
         rank: index + 1,
@@ -51,9 +79,8 @@ exports.updateRanking = functions.firestore
       await db.collection("ranking").doc(recordId).set(rankingData);
 
       console.log(`Ranking updated for recordId: ${recordId}`);
-      return null;
     } catch (error) {
       console.error(`Error updating ranking for recordId: ${recordId}`, error);
-      return null;
     }
-  });
+  }
+);
