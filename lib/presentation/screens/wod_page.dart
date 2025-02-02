@@ -44,19 +44,6 @@ class _WodPageState extends State<WodPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('WOD'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.leaderboard),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const RankingPage(),
-                ),
-              );
-            },
-          ),
-        ],
       ),
       body: BlocListener<DateCubit, DateTime>(
         listener: (context, selectedDate) {
