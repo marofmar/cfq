@@ -4,23 +4,23 @@ class UserDto {
   final String uid;
   final String phoneNumber;
   final String role;
-  final String name; // DTO에서는 String으로 유지
-  final List<String>? attendedWodIds;
-  final List<String>? rankedWodIds;
-  final Map<String, int>? oneRMrecords; // DTO에서는 String 키로 유지
-  final Map<String, int>? threeRMrecords;
-  final Map<String, int>? fiveRMrecords;
+  final String name;
+  final List<String> attendedWodIds;
+  final List<String> rankedWodIds;
+  final Map<String, int> oneRMrecords;
+  final Map<String, int> threeRMrecords;
+  final Map<String, int> fiveRMrecords;
 
-  UserDto({
+  const UserDto({
     required this.uid,
     required this.phoneNumber,
     required this.role,
-    this.name = '',
-    this.attendedWodIds,
-    this.rankedWodIds,
-    this.oneRMrecords,
-    this.threeRMrecords,
-    this.fiveRMrecords,
+    required this.name,
+    this.attendedWodIds = const [],
+    this.rankedWodIds = const [],
+    this.oneRMrecords = const {},
+    this.threeRMrecords = const {},
+    this.fiveRMrecords = const {},
   });
 
   // JSON -> DTO
@@ -56,15 +56,21 @@ class UserDto {
   // DTO -> Entity
   UserEntity toEntity() {
     return UserEntity(
-      attendedWodIds,
-      rankedWodIds,
-      oneRMrecords,
-      threeRMrecords,
-      fiveRMrecords,
       uid: uid,
       phoneNumber: phoneNumber,
       role: UserEntity.stringToUserRole(role),
       name: name,
+      attendedWodIds: attendedWodIds,
+      rankedWodIds: rankedWodIds,
+      oneRMrecords: oneRMrecords.map(
+        (key, value) => MapEntry(UserEntity.stringToLiftType(key), value),
+      ),
+      threeRMrecords: threeRMrecords.map(
+        (key, value) => MapEntry(UserEntity.stringToLiftType(key), value),
+      ),
+      fiveRMrecords: fiveRMrecords.map(
+        (key, value) => MapEntry(UserEntity.stringToLiftType(key), value),
+      ),
     );
   }
 
@@ -74,6 +80,7 @@ class UserDto {
       uid: entity.uid,
       phoneNumber: entity.phoneNumber,
       role: UserEntity.userRoleToString(entity.role),
+      name: entity.name,
       attendedWodIds: entity.attendedWodIds,
       rankedWodIds: entity.rankedWodIds,
       oneRMrecords: entity.oneRMrecords.map(
