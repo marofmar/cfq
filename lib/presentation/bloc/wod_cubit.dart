@@ -1,32 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cfq/domain/entities/app_error.dart';
-import 'package:cfq/domain/entities/no_params.dart';
 import 'package:cfq/domain/entities/wod_entity.dart';
-import 'package:cfq/domain/usecases/get_wod_by_date.dart';
 import 'package:cfq/domain/usecases/get_wod_by_specific_date.dart';
 import 'package:dartz/dartz.dart';
 
 class WodCubit extends Cubit<WodState> {
-  final GetWodByDate getWodByDate;
   final GetWodBySpecificDate getWodBySpecificDate;
 
-  WodCubit(this.getWodByDate, this.getWodBySpecificDate) : super(WodInitial());
-
-  Future<void> fetchWod(DateTime date) async {
-    emit(WodLoading());
-    final Either<AppError, List<WodEntity>> result =
-        await getWodByDate(NoParams());
-    result.fold(
-      (error) => emit(WodError(error.message)),
-      (wods) {
-        if (wods.isNotEmpty) {
-          emit(WodLoaded(wods));
-        } else {
-          emit(WodError('No WODs found.'));
-        }
-      },
-    );
-  }
+  WodCubit(this.getWodBySpecificDate) : super(WodInitial());
 
   Future<void> fetchWodBySpecificDate(String datePath) async {
     emit(WodLoading());
