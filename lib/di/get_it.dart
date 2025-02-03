@@ -1,38 +1,32 @@
-// import 'package:get_it/get_it.dart';
-// import 'package:http/http.dart';
-// import 'package:movie_app/data/core/api_client.dart';
-// import 'package:movie_app/data/data_sources/movie_remote_data_source.dart';
-// import 'package:movie_app/data/repositories/movie_repository_impl.dart';
-// import 'package:movie_app/domain/repositories/movie_repository.dart';
-// import 'package:movie_app/domain/usecases/get_playing_now.dart';
-// import 'package:movie_app/domain/usecases/get_popular.dart';
-// import 'package:movie_app/domain/usecases/get_top_rated.dart';
-// import 'package:movie_app/domain/usecases/get_trending.dart';
-// import 'package:movie_app/domain/usecases/get_upcoming.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get_it/get_it.dart';
+import 'package:cfq/presentation/bloc/user_cubit.dart';
+import 'package:cfq/domain/usecases/get_current_user.dart';
+import 'package:cfq/data/repositories/user_repository_impl.dart';
+import 'package:cfq/data/datasources/user_remote_data_source.dart';
+import 'package:cfq/domain/repositories/user_repository.dart';
 
-// final getItInstance = GetIt.I;
+final sl = GetIt.instance;
 
-// Future init() async {
-//   // register dependencies
-//   getItInstance.registerLazySingleton<Client>(() => Client());
+Future<void> init() async {
+  // Blocs
+  sl.registerFactory(() => UserCubit(sl()));
 
-//   getItInstance
-//       .registerLazySingleton<ApiClient>(() => ApiClient(getItInstance()));
+  // Use cases
+  sl.registerLazySingleton(() => GetCurrentUser(sl()));
 
-//   getItInstance.registerLazySingleton<MovieRemoteDataSource>(
-//       () => MovieRemoteDataSourceImpl(getItInstance()));
+  // Repository
+  sl.registerLazySingleton<UserRepository>(
+    () => UserRepositoryImpl(sl()),
+  );
 
-//   getItInstance
-//       .registerLazySingleton<GetTrending>(() => GetTrending(getItInstance()));
-//   getItInstance.registerLazySingleton<GetPlayingNow>(
-//       () => GetPlayingNow(getItInstance()));
-//   getItInstance
-//       .registerLazySingleton<GetPopular>(() => GetPopular(getItInstance()));
-//   getItInstance
-//       .registerLazySingleton<GetTopRated>(() => GetTopRated(getItInstance()));
-//   getItInstance
-//       .registerLazySingleton<GetUpcoming>(() => GetUpcoming(getItInstance()));
+  // Data sources
+  sl.registerLazySingleton<UserRemoteDataSource>(
+    () => UserRemoteDataSourceImpl(sl(), sl()),
+  );
 
-//   getItInstance.registerLazySingleton<MovieRepository>(
-//       () => MovieRepositoryImpl(getItInstance()));
-// }
+  // External
+  sl.registerLazySingleton(() => FirebaseFirestore.instance);
+  sl.registerLazySingleton(() => FirebaseAuth.instance);
+}

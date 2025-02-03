@@ -1,4 +1,4 @@
-import 'package:cfq/data/models/wod_model.dart';
+import 'package:cfq/data/dto/wod_dto.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cfq/domain/entities/record_entity.dart';
 
