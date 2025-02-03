@@ -25,6 +25,20 @@ class _WodPageState extends State<WodPage> {
   String _selectedGender = 'male';
   String _selectedLevel = 'rxd';
 
+  @override
+  void initState() {
+    super.initState();
+    // 페이지 로드 시 오늘 날짜의 WOD 불러오기
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final today = DateTime.now();
+      final formattedDate =
+          "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
+
+      context.read<DateCubit>().updateDate(today);
+      context.read<WodCubit>().fetchWodBySpecificDate(formattedDate);
+    });
+  }
+
   void _resetFields() {
     _nameController.clear();
     _recordController.clear();
