@@ -5,12 +5,14 @@ class WodModel extends WodEntity {
   final List<String> exercises;
   final Map<String, dynamic> level;
   final String description;
+  final String? title;
 
   WodModel({
     required this.id,
     required this.exercises,
     required this.level,
     required this.description,
+    this.title,
   }) : super(
           id: id,
           exercises: exercises,
@@ -24,6 +26,7 @@ class WodModel extends WodEntity {
       exercises: List<String>.from(json['exercises']),
       level: Map<String, dynamic>.from(json['level']),
       description: json['description'],
+      title: json['title'],
     );
   }
 
@@ -33,6 +36,7 @@ class WodModel extends WodEntity {
       'exercises': exercises,
       'level': level,
       'description': description,
+      'title': title,
     };
   }
 

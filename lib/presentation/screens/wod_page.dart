@@ -99,26 +99,30 @@ class _WodPageState extends State<WodPage> {
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'ID: ${wod.id}',
+                                  wod.id,
+                                  textAlign: TextAlign.center,
                                   style:
                                       Theme.of(context).textTheme.titleMedium,
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Exercises: ${wod.exercises.join(', ')}',
+                                  '\n${wod.exercises.join('\n\n')}',
+                                  textAlign: TextAlign.center,
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Level: ${wod.level.entries.map((e) => '${e.key}: ${e.value}').join(', ')}',
+                                  '\n${_formatLevels(wod.level)}',
                                   style: Theme.of(context).textTheme.bodyLarge,
+                                  textAlign: TextAlign.center,
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Description: ${wod.description}',
+                                  '\n${wod.description}',
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
                               ],
@@ -205,5 +209,16 @@ class _WodPageState extends State<WodPage> {
         ),
       ),
     );
+  }
+
+  String _formatLevels(Map<String, dynamic> levels) {
+    final order = ['rxd', 'a', 'b', 'c'];
+    final sortedEntries = levels.entries.toList()
+      ..sort((a, b) =>
+          order.indexOf(a.key.toLowerCase()) -
+          order.indexOf(b.key.toLowerCase()));
+    return sortedEntries
+        .map((e) => '${e.key.toUpperCase()}: ${e.value}')
+        .join('\n');
   }
 }
