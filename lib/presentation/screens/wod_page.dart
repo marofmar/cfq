@@ -1,4 +1,5 @@
 import 'package:cfq/presentation/bloc/date_cubit.dart';
+import 'package:cfq/presentation/bloc/user_state.dart';
 import 'package:cfq/presentation/themes/theme_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,8 +7,9 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:cfq/presentation/bloc/wod_cubit.dart';
 import 'package:cfq/presentation/bloc/record_cubit.dart';
 import 'package:cfq/domain/entities/record_entity.dart';
-import 'package:cfq/presentation/screens/ranking_page.dart';
 import 'package:cfq/presentation/widgets/record_input_form.dart';
+import 'package:cfq/presentation/bloc/user_cubit.dart';
+import 'package:cfq/domain/entities/user_entity.dart';
 
 class WodPage extends StatefulWidget {
   const WodPage({Key? key}) : super(key: key);
@@ -140,36 +142,46 @@ class _WodPageState extends State<WodPage> {
                 },
               ),
             ),
-            RecordInputForm(
-              nameController: _nameController,
-              recordController: _recordController,
-              selectedGender: _selectedGender,
-              selectedLevel: _selectedLevel,
-              onGenderChanged: (value) {
-                setState(() {
-                  _selectedGender = value ??
-                      ''; // Handle null case by providing empty string default
-                });
-              },
-              onLevelChanged: (value) {
-                setState(() {
-                  _selectedLevel = value ?? '';
-                });
-              },
-              onSubmit: () {
-                final wodId =
-                    "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}";
+            BlocBuilder<UserCubit, UserState>(
+              builder: (context, userState) {
+                final user = userState.user;
+                if (user != null &&
+                    (user.role == UserRole.admin ||
+                        user.role == UserRole.coach)) {
+                  return RecordInputForm(
+                    nameController: _nameController,
+                    recordController: _recordController,
+                    selectedGender: _selectedGender,
+                    selectedLevel: _selectedLevel,
+                    onGenderChanged: (value) {
+                      setState(() {
+                        _selectedGender = value ??
+                            ''; // Handle null case by providing empty string default
+                      });
+                    },
+                    onLevelChanged: (value) {
+                      setState(() {
+                        _selectedLevel = value ?? '';
+                      });
+                    },
+                    onSubmit: () {
+                      final wodId =
+                          "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}";
 
-                final record = RecordEntity(
-                  name: _nameController.text,
-                  gender: _selectedGender,
-                  level: _selectedLevel,
-                  wodId: wodId,
-                  record: _recordController.text,
-                );
+                      final record = RecordEntity(
+                        name: _nameController.text,
+                        gender: _selectedGender,
+                        level: _selectedLevel,
+                        wodId: wodId,
+                        record: _recordController.text,
+                      );
 
-                context.read<RecordCubit>().postRecord(record);
-                _resetFields();
+                      context.read<RecordCubit>().postRecord(record);
+                      _resetFields();
+                    },
+                  );
+                }
+                return const SizedBox.shrink();
               },
             ),
             BlocListener<RecordCubit, RecordState>(
