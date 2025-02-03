@@ -10,7 +10,14 @@ class RMPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const RMPageContent();
+    return BlocProvider<UserCubit>(
+      create: (context) {
+        final cubit = sl<UserCubit>();
+        cubit.loadCurrentUser();
+        return cubit;
+      },
+      child: const RMPageContent(),
+    );
   }
 }
 

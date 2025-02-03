@@ -1,6 +1,7 @@
 import 'package:cfq/presentation/bloc/date_cubit.dart';
 import 'package:cfq/presentation/bloc/record_cubit.dart';
 import 'package:cfq/presentation/bloc/wod_cubit.dart';
+import 'package:cfq/presentation/screens/my_page.dart';
 import 'package:cfq/presentation/screens/rm_page.dart';
 import 'package:cfq/presentation/screens/ranking_page.dart';
 import 'package:cfq/presentation/screens/wod_page.dart';
@@ -48,7 +49,7 @@ class HomePage extends StatelessWidget {
               children: const [
                 WodPage(),
                 RankingPage(),
-                RMPage(),
+                MyPage(),
               ],
             );
           },

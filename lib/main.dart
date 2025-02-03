@@ -1,6 +1,7 @@
 import 'package:cfq/presentation/screens/home_page.dart';
 import 'package:cfq/presentation/screens/login_page.dart';
 import 'package:cfq/presentation/screens/ranking_page.dart';
+import 'package:cfq/presentation/screens/rm_page.dart';
 import 'package:cfq/presentation/screens/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,6 +44,9 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: HomePage(),
+        routes: {
+          '/rm': (context) => const RMPage(),
+        },
       ),
     );
   }
