@@ -10,6 +10,7 @@ import 'package:cfq/presentation/bloc/navigation_cubit.dart';
 import 'package:cfq/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:get_it/get_it.dart';
 import 'package:cfq/presentation/bloc/ranking_cubit.dart';
+import 'package:cfq/presentation/bloc/user_cubit.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -30,6 +31,13 @@ class HomePage extends StatelessWidget {
         ),
         BlocProvider<RankingCubit>(
           create: (_) => GetIt.I<RankingCubit>(),
+        ),
+        BlocProvider<UserCubit>(
+          create: (_) {
+            final cubit = GetIt.I<UserCubit>();
+            cubit.loadCurrentUser();
+            return cubit;
+          },
         ),
       ],
       child: Scaffold(

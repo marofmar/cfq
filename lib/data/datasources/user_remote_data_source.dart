@@ -37,7 +37,14 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
   @override
   Future<UserDto> updateRM(UpdateRMParams params) async {
-    final rmField = params.rmType.toLowerCase() + 'records';
+    // rmType에 따른 정확한 필드 이름 매핑
+    final rmField = switch (params.rmType) {
+      '1RM' => 'oneRMrecords',
+      '3RM' => 'threeRMrecords',
+      '5RM' => 'fiveRMrecords',
+      _ => throw Exception('Invalid RM type'),
+    };
+
     final liftTypeStr = UserEntity.liftTypeToString(params.liftType);
 
     final docRef = firestore.collection('users').doc(params.userId);

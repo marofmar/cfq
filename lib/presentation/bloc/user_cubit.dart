@@ -36,8 +36,12 @@ class UserCubit extends Cubit<UserState> {
     required int weight,
   }) async {
     try {
+      print('UserCubit updateRM called');
       final user = state.user;
-      if (user == null) return;
+      if (user == null) {
+        print('No user found in state');
+        return;
+      }
 
       final params = UpdateRMParams(
         userId: user.uid,
@@ -47,12 +51,20 @@ class UserCubit extends Cubit<UserState> {
       );
 
       final result = await updateUserRM(params);
+      print('Update result received');
 
       result.fold(
-        (failure) => emit(state.copyWith(error: failure.message)),
-        (updatedUser) => emit(state.copyWith(user: updatedUser)),
+        (failure) {
+          print('Update failed: ${failure.message}');
+          emit(state.copyWith(error: failure.message));
+        },
+        (updatedUser) {
+          print('Update successful');
+          emit(state.copyWith(user: updatedUser));
+        },
       );
     } catch (e) {
+      print('Error in updateRM: $e');
       emit(state.copyWith(error: e.toString()));
     }
   }

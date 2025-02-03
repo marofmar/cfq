@@ -10,15 +10,7 @@ class RMPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<UserCubit>(
-      create: (context) {
-        final cubit = sl<UserCubit>();
-        cubit.loadCurrentUser();
-        return cubit;
-      },
-      lazy: false,
-      child: const RMPageContent(),
-    );
+    return const RMPageContent();
   }
 }
 
@@ -40,14 +32,17 @@ class RMPageContent extends StatelessWidget {
             ],
           ),
         ),
-        body: BlocBuilder<UserCubit, UserState>(
+        body: BlocConsumer<UserCubit, UserState>(
+          listener: (context, state) {
+            if (state.error.isNotEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Error: ${state.error}')),
+              );
+            }
+          },
           builder: (context, state) {
             if (state.isLoading) {
               return const Center(child: CircularProgressIndicator());
-            }
-
-            if (state.error.isNotEmpty) {
-              return Center(child: Text('Error: ${state.error}'));
             }
 
             final user = state.user;
@@ -107,9 +102,13 @@ class RMPageContent extends StatelessWidget {
       int currentRecord, String rmType) {
     final controller = TextEditingController(text: currentRecord.toString());
 
+    // 현재 context에서 UserCubit을 가져옴
+    final userCubit = context.read<UserCubit>();
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
+        // dialogContext 사용
         title: Text('Update ${_formatLiftType(liftType)} $rmType'),
         content: TextField(
           controller: controller,
@@ -121,19 +120,27 @@ class RMPageContent extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext), // dialogContext 사용
             child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
               final newRecord = int.tryParse(controller.text);
               if (newRecord != null) {
-                context.read<UserCubit>().updateRM(
-                      liftType: liftType,
-                      rmType: rmType,
-                      weight: newRecord,
-                    );
-                Navigator.pop(context);
+                print('Attempting to update: $liftType, $rmType, $newRecord');
+                // 미리 가져온 userCubit 사용
+                userCubit.updateRM(
+                  liftType: liftType,
+                  rmType: rmType,
+                  weight: newRecord,
+                );
+                print('Update called');
+                Navigator.pop(dialogContext); // dialogContext 사용
+              } else {
+                ScaffoldMessenger.of(dialogContext).showSnackBar(
+                  // dialogContext 사용
+                  const SnackBar(content: Text('Please enter a valid number')),
+                );
               }
             },
             child: const Text('Save'),
