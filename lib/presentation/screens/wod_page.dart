@@ -53,98 +53,106 @@ class _WodPageState extends State<WodPage> {
                 "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}",
               );
         },
-        child: Column(
+        child: Stack(
           children: [
-            BlocBuilder<DateCubit, DateTime>(
-              builder: (context, state) {
-                print('Current focused day: $state');
-                return TableCalendar(
-                  firstDay: DateTime.utc(2025, 1, 1),
-                  lastDay: DateTime.utc(2025, 12, 31),
-                  focusedDay: state,
-                  calendarFormat: CalendarFormat.week,
-                  selectedDayPredicate: (day) => isSameDay(state, day),
-                  onDaySelected: (selectedDay, focusedDay) {
-                    setState(() {
-                      _selectedDate = selectedDay;
-                    });
-                    context.read<DateCubit>().updateDate(selectedDay);
-                  },
-                  calendarStyle: CalendarStyle(
-                    selectedDecoration: BoxDecoration(
-                      color: AppColor.mint,
-                      shape: BoxShape.rectangle,
-                    ),
-                    todayDecoration: BoxDecoration(
-                      color: AppColor.mint,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                );
-              },
-            ),
-            Expanded(
-              child: BlocBuilder<WodCubit, WodState>(
-                builder: (context, state) {
-                  if (state is WodLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is WodLoaded) {
-                    return ListView.builder(
-                      itemCount: state.wods.length,
-                      itemBuilder: (context, index) {
-                        final wod = state.wods[index];
-                        return Card(
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 16),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  wod.id,
-                                  textAlign: TextAlign.center,
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  '\n${wod.exercises.join('\n\n')}',
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  '\n${_formatLevels(wod.level)}',
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  '\n${wod.description}',
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
+            Column(
+              children: [
+                BlocBuilder<DateCubit, DateTime>(
+                  builder: (context, state) {
+                    print('Current focused day: $state');
+                    return TableCalendar(
+                      firstDay: DateTime.utc(2025, 1, 1),
+                      lastDay: DateTime.utc(2025, 12, 31),
+                      focusedDay: state,
+                      calendarFormat: CalendarFormat.week,
+                      selectedDayPredicate: (day) => isSameDay(state, day),
+                      onDaySelected: (selectedDay, focusedDay) {
+                        setState(() {
+                          _selectedDate = selectedDay;
+                        });
+                        context.read<DateCubit>().updateDate(selectedDay);
                       },
-                    );
-                  } else if (state is WodError) {
-                    return Center(
-                      child: SelectableText.rich(
-                        TextSpan(
-                          text: state.message,
-                          style: const TextStyle(color: Colors.red),
+                      calendarStyle: CalendarStyle(
+                        selectedDecoration: BoxDecoration(
+                          color: AppColor.mint,
+                          shape: BoxShape.rectangle,
+                        ),
+                        todayDecoration: BoxDecoration(
+                          color: AppColor.mint,
+                          shape: BoxShape.circle,
                         ),
                       ),
                     );
-                  }
-                  return const Center(
-                      child: Text('Select a date to view WOD.'));
-                },
-              ),
+                  },
+                ),
+                Expanded(
+                  child: BlocBuilder<WodCubit, WodState>(
+                    builder: (context, state) {
+                      if (state is WodLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is WodLoaded) {
+                        return ListView.builder(
+                          itemCount: state.wods.length,
+                          itemBuilder: (context, index) {
+                            final wod = state.wods[index];
+                            return Card(
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 16),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      wod.id,
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      '\n${wod.exercises.join('\n\n')}',
+                                      textAlign: TextAlign.center,
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      '\n${_formatLevels(wod.level)}',
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      '\n${wod.description}',
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      } else if (state is WodError) {
+                        return Center(
+                          child: SelectableText.rich(
+                            TextSpan(
+                              text: state.message,
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        );
+                      }
+                      return const Center(
+                          child: Text('Select a date to view WOD.'));
+                    },
+                  ),
+                ),
+              ],
             ),
             BlocBuilder<UserCubit, UserState>(
               builder: (context, userState) {
@@ -152,36 +160,88 @@ class _WodPageState extends State<WodPage> {
                 if (user != null &&
                     (user.role == UserRole.admin ||
                         user.role == UserRole.coach)) {
-                  return RecordInputForm(
-                    nameController: _nameController,
-                    recordController: _recordController,
-                    selectedGender: _selectedGender,
-                    selectedLevel: _selectedLevel,
-                    onGenderChanged: (value) {
-                      setState(() {
-                        _selectedGender = value ??
-                            ''; // Handle null case by providing empty string default
-                      });
-                    },
-                    onLevelChanged: (value) {
-                      setState(() {
-                        _selectedLevel = value ?? '';
-                      });
-                    },
-                    onSubmit: () {
-                      final wodId =
-                          "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}";
-
-                      final record = RecordEntity(
-                        name: _nameController.text,
-                        gender: _selectedGender,
-                        level: _selectedLevel,
-                        wodId: wodId,
-                        record: _recordController.text,
+                  return DraggableScrollableSheet(
+                    initialChildSize: 0.1, // 초기 크기 (10%)
+                    minChildSize: 0.1, // 최소 크기
+                    maxChildSize: 0.6, // 최대 크기 (70%)
+                    builder: (context, scrollController) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).cardColor,
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(16),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 10,
+                              offset: const Offset(0, -5),
+                            ),
+                          ],
+                        ),
+                        child: SingleChildScrollView(
+                          controller: scrollController,
+                          child: Column(
+                            children: [
+                              // 드래그 핸들과 제목
+                              Column(
+                                children: [
+                                  Container(
+                                    margin:
+                                        const EdgeInsets.symmetric(vertical: 8),
+                                    width: 40,
+                                    height: 4,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(2),
+                                    ),
+                                  ),
+                                  const Text(
+                                    'WOD 기록 입력',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                ],
+                              ),
+                              // 기존 RecordInputForm
+                              RecordInputForm(
+                                nameController: _nameController,
+                                recordController: _recordController,
+                                selectedGender: _selectedGender,
+                                selectedLevel: _selectedLevel,
+                                onGenderChanged: (value) {
+                                  setState(() {
+                                    _selectedGender = value ?? '';
+                                  });
+                                },
+                                onLevelChanged: (value) {
+                                  setState(() {
+                                    _selectedLevel = value ?? '';
+                                  });
+                                },
+                                onSubmit: () {
+                                  final wodId =
+                                      "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}";
+                                  final record = RecordEntity(
+                                    name: _nameController.text,
+                                    gender: _selectedGender,
+                                    level: _selectedLevel,
+                                    wodId: wodId,
+                                    record: _recordController.text,
+                                  );
+                                  context
+                                      .read<RecordCubit>()
+                                      .postRecord(record);
+                                  _resetFields();
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
                       );
-
-                      context.read<RecordCubit>().postRecord(record);
-                      _resetFields();
                     },
                   );
                 }

@@ -61,10 +61,28 @@ class RecordInputForm extends StatelessWidget {
             decoration: const InputDecoration(labelText: 'Record'),
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: onSubmit,
-            child: const Text('Submit Record'),
+          Center(
+            child: ElevatedButton(
+              onPressed: onSubmit,
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text(
+                'Submit record',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
+          const SizedBox(height: 16),
         ],
       ),
     );
