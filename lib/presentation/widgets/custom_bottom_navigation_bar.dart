@@ -11,14 +11,16 @@ class CustomBottomNavigationBar extends StatelessWidget {
       builder: (context, state) {
         return BottomNavigationBar(
           currentIndex: state,
-          onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
-          items: const <BottomNavigationBarItem>[
+          onTap: (index) {
+            context.read<NavigationCubit>().updateIndex(index);
+          },
+          items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.fitness_center),
               label: 'WOD',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart),
+              icon: Icon(Icons.leaderboard),
               label: 'Ranking',
             ),
             BottomNavigationBarItem(
