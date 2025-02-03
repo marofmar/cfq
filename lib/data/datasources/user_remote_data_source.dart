@@ -1,9 +1,12 @@
 import 'package:cfq/data/dto/user_dto.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cfq/domain/entities/update_rm_params.dart';
+import 'package:cfq/domain/entities/user_entity.dart';
 
 abstract class UserRemoteDataSource {
   Future<UserDto> getCurrentUser();
+  Future<UserDto> updateRM(UpdateRMParams params);
 }
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
@@ -28,6 +31,36 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
     return UserDto.fromJson({
       'uid': currentUser.uid,
+      ...docSnapshot.data()!,
+    });
+  }
+
+  @override
+  Future<UserDto> updateRM(UpdateRMParams params) async {
+    // rmType에 따른 정확한 필드 이름 매핑
+    final rmField = switch (params.rmType) {
+      '1RM' => 'oneRMrecords',
+      '3RM' => 'threeRMrecords',
+      '5RM' => 'fiveRMrecords',
+      _ => throw Exception('Invalid RM type'),
+    };
+
+    final liftTypeStr = UserEntity.liftTypeToString(params.liftType);
+
+    final docRef = firestore.collection('users').doc(params.userId);
+
+    await docRef.update({
+      '$rmField.$liftTypeStr': params.weight,
+    });
+
+    // 업데이트된 사용자 정보 반환
+    final docSnapshot = await docRef.get();
+    if (!docSnapshot.exists) {
+      throw Exception('User not found');
+    }
+
+    return UserDto.fromJson({
+      'uid': params.userId,
       ...docSnapshot.data()!,
     });
   }

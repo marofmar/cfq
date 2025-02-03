@@ -6,15 +6,17 @@ import 'package:cfq/domain/usecases/get_current_user.dart';
 import 'package:cfq/data/repositories/user_repository_impl.dart';
 import 'package:cfq/data/datasources/user_remote_data_source.dart';
 import 'package:cfq/domain/repositories/user_repository.dart';
+import 'package:cfq/domain/usecases/update_user_rm.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
   // Blocs
-  sl.registerFactory(() => UserCubit(sl()));
+  sl.registerFactory(() => UserCubit(sl(), sl()));
 
   // Use cases
   sl.registerLazySingleton(() => GetCurrentUser(sl()));
+  sl.registerLazySingleton(() => UpdateUserRM(sl()));
 
   // Repository
   sl.registerLazySingleton<UserRepository>(

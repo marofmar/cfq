@@ -24,6 +24,7 @@ import 'domain/repositories/user_repository.dart';
 import 'data/datasources/user_remote_data_source.dart';
 import 'domain/usecases/get_current_user.dart';
 import 'presentation/bloc/user_cubit.dart';
+import 'domain/usecases/update_user_rm.dart';
 
 final sl = GetIt.instance;
 
@@ -31,15 +32,15 @@ Future<void> init() async {
   // External
   sl.registerLazySingleton(() => FirebaseFirestore.instance);
   sl.registerLazySingleton(() => FirebaseAuth.instance);
-
   // Cubits
-  sl.registerFactory(() => UserCubit(sl()));
+  sl.registerFactory(() => UserCubit(sl(), sl()));
   sl.registerFactory(() => WodCubit(sl()));
   sl.registerFactory(() => RecordCubit(sl()));
   sl.registerFactory(() => RankingCubit(sl()));
 
   // Use cases
   sl.registerLazySingleton(() => GetCurrentUser(sl()));
+  sl.registerLazySingleton(() => UpdateUserRM(sl()));
   sl.registerLazySingleton(() => GetWodBySpecificDate(sl()));
   sl.registerLazySingleton(() => PostRecordBySpecificDate(sl()));
   sl.registerLazySingleton(() => GetRankingBySpecificDate(sl()));
