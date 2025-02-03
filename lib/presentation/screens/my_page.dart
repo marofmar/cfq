@@ -1,3 +1,4 @@
+import 'package:cfq/domain/entities/user_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cfq/presentation/bloc/user_cubit.dart';
@@ -48,6 +49,11 @@ class MyPage extends StatelessWidget {
                           'Phone: ${user.phoneNumber}',
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Role: ${_formatRole(user.role)}',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
                       ],
                     ),
                   ),
@@ -74,5 +80,12 @@ class MyPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  String _formatRole(UserRole role) {
+    // enum 값을 사용자 친화적인 텍스트로 변환
+    final name = role.toString().split('.').last;
+    // 첫 글자만 대문자로 변환
+    return name[0].toUpperCase() + name.substring(1).toLowerCase();
   }
 }
