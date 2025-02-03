@@ -25,6 +25,7 @@ class WodRemoteDataSourceImpl implements WodRemoteDataSource {
         exercises: List<String>.from(data['exercises']),
         level: Map<String, dynamic>.from(data['level']),
         description: data['description'] as String,
+        title: data['title'] as String?,
       );
     }).toList();
   }
@@ -41,6 +42,7 @@ class WodRemoteDataSourceImpl implements WodRemoteDataSource {
         exercises: List<String>.from(data['exercises']),
         level: Map<String, dynamic>.from(data['level']),
         description: data['description'] as String,
+        title: data['title'] as String?,
       );
     } else {
       throw Exception('Document does not exist');
