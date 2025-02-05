@@ -10,6 +10,7 @@ import 'package:cfq/domain/entities/record_entity.dart';
 import 'package:cfq/presentation/widgets/record_input_form.dart';
 import 'package:cfq/presentation/bloc/user_cubit.dart';
 import 'package:cfq/domain/entities/user_entity.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 class WodPage extends StatefulWidget {
   const WodPage({Key? key}) : super(key: key);
@@ -60,6 +61,31 @@ class _WodPageState extends State<WodPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('WOD'),
+        actions: [
+          // 일요일이고 admin/coach인 경우에만 버튼 표시
+          BlocBuilder<UserCubit, UserState>(
+            builder: (context, userState) {
+              final user = userState.user;
+              final isSunday = _selectedDate.weekday == DateTime.sunday;
+
+              print('Selected Date: $_selectedDate'); // 디버깅용
+              print('Is Sunday: $isSunday'); // 디버깅용
+              print('User Role: ${user?.role}'); // 디버깅용
+
+              if (isSunday &&
+                  user != null &&
+                  (user.role == UserRole.admin ||
+                      user.role == UserRole.coach)) {
+                return IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: () => _generateWod(context),
+                  tooltip: 'WOD 만들기',
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+        ],
       ),
       body: BlocListener<DateCubit, DateTime>(
         listener: (context, selectedDate) {
@@ -105,6 +131,15 @@ class _WodPageState extends State<WodPage> {
                       if (state is WodLoading) {
                         return const Center(child: CircularProgressIndicator());
                       } else if (state is WodLoaded) {
+                        if (state.wods.isEmpty &&
+                            _selectedDate.weekday == DateTime.sunday) {
+                          return Center(
+                            child: ElevatedButton(
+                              onPressed: () => _generateWod(context),
+                              child: const Text('WOD 만들기'),
+                            ),
+                          );
+                        }
                         return ListView.builder(
                           itemCount: state.wods.length,
                           itemBuilder: (context, index) {
@@ -125,6 +160,16 @@ class _WodPageState extends State<WodPage> {
                                           .textTheme
                                           .titleMedium,
                                     ),
+                                    if (wod.createdBy != null)
+                                      Text(
+                                        wod.createdBy!,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              fontStyle: FontStyle.italic,
+                                            ),
+                                      ),
                                     const SizedBox(height: 8),
                                     Text(
                                       '\n${wod.exercises.join('\n\n')}',
@@ -152,6 +197,15 @@ class _WodPageState extends State<WodPage> {
                           },
                         );
                       } else if (state is WodError) {
+                        // 일요일 선택 시 에러 상태에서도 "WOD 만들기" 버튼 표시
+                        if (_selectedDate.weekday == DateTime.sunday) {
+                          return Center(
+                            child: ElevatedButton(
+                              onPressed: () => _generateWod(context),
+                              child: const Text('WOD 만들기'),
+                            ),
+                          );
+                        }
                         return Center(
                           child: SelectableText.rich(
                             TextSpan(
@@ -283,6 +337,34 @@ class _WodPageState extends State<WodPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _generateWod(BuildContext context) async {
+    try {
+      final functions = FirebaseFunctions.instance;
+      final result = await functions.httpsCallable('generateWod').call({
+        'date':
+            "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}",
+      });
+
+      if (result.data['success']) {
+        // WOD가 생성되고 Firestore에 저장되었으므로 화면 갱신
+        context.read<WodCubit>().fetchWodBySpecificDate(
+              "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}",
+            );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('WOD가 생성되었습니다.')),
+        );
+      } else {
+        throw Exception(result.data['error']);
+      }
+    } catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('WOD 생성 실패: ${e.toString()}')),
+      );
+    }
   }
 
   String _formatLevels(Map<String, dynamic> levels) {
