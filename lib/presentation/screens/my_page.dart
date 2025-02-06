@@ -1,4 +1,5 @@
 import 'package:cfq/domain/entities/user_entity.dart';
+import 'package:cfq/presentation/themes/theme_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cfq/presentation/bloc/user_cubit.dart';
@@ -34,25 +35,33 @@ class MyPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Card(
+                Container(
+                  width: double.infinity,
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Column(
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Name: ${user.name}',
+                          user.name,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
+                        // const SizedBox(height: 8),
+                        // Text(
+                        //   'Phone: ${user.phoneNumber}',
+                        //   style: Theme.of(context).textTheme.titleMedium,
+                        // ),
+                        Spacer(),
                         const SizedBox(height: 8),
-                        Text(
-                          'Phone: ${user.phoneNumber}',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Role: ${_formatRole(user.role)}',
-                          style: Theme.of(context).textTheme.titleMedium,
+                        Card(
+                          color: AppColor.mint,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              '${_formatRole(user.role)}',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ),
                         ),
                       ],
                     ),
