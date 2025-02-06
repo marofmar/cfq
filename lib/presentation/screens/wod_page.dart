@@ -11,6 +11,8 @@ import 'package:cfq/presentation/widgets/record_input_form.dart';
 import 'package:cfq/presentation/bloc/user_cubit.dart';
 import 'package:cfq/domain/entities/user_entity.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class WodPage extends StatefulWidget {
   const WodPage({Key? key}) : super(key: key);
@@ -61,31 +63,6 @@ class _WodPageState extends State<WodPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('WOD'),
-        actions: [
-          // 일요일이고 admin/coach인 경우에만 버튼 표시
-          BlocBuilder<UserCubit, UserState>(
-            builder: (context, userState) {
-              final user = userState.user;
-              final isSunday = _selectedDate.weekday == DateTime.sunday;
-
-              print('Selected Date: $_selectedDate'); // 디버깅용
-              print('Is Sunday: $isSunday'); // 디버깅용
-              print('User Role: ${user?.role}'); // 디버깅용
-
-              if (isSunday &&
-                  user != null &&
-                  (user.role == UserRole.admin ||
-                      user.role == UserRole.coach)) {
-                return IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () => _generateWod(context),
-                  tooltip: 'WOD 만들기',
-                );
-              }
-              return const SizedBox.shrink();
-            },
-          ),
-        ],
       ),
       body: BlocListener<DateCubit, DateTime>(
         listener: (context, selectedDate) {
@@ -340,19 +317,35 @@ class _WodPageState extends State<WodPage> {
   }
 
   Future<void> _generateWod(BuildContext context) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("사용자가 로그인되어 있지 않습니다.")),
+      );
+      return;
+    }
+
+    // 토큰 갱신 및 재로딩 (필요 시)
+    await currentUser.getIdToken(true);
+    await currentUser.reload();
+    final refreshedUser = FirebaseAuth.instance.currentUser;
+    final token = await refreshedUser?.getIdToken();
+    print("Refreshed ID Token: $token");
+
     try {
-      final functions = FirebaseFunctions.instance;
-      final result = await functions.httpsCallable('generateWod').call({
+      // 기본 Firebase App 인스턴스를 사용하도록 명시적으로 지정 (필요 시)
+      final functions = FirebaseFunctions.instanceFor(app: Firebase.app());
+      final callable = functions.httpsCallable('generateWod');
+      final result = await callable.call({
         'date':
             "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}",
       });
 
       if (result.data['success']) {
-        // WOD가 생성되고 Firestore에 저장되었으므로 화면 갱신
         context.read<WodCubit>().fetchWodBySpecificDate(
               "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}",
             );
-
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('WOD가 생성되었습니다.')),
         );
