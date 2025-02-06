@@ -19,4 +19,10 @@ class WodRepositoryImpl implements WodRepository {
     final wodModel = await remoteDataSource.getWodBySpecificDate(datePath);
     return wodModel.toEntity();
   }
+
+  @override
+  Future<void> postWodBySpecificDate(WodEntity wod) async {
+    final wodModel = WodModel.fromEntity(wod);
+    await remoteDataSource.postWodBySpecificDate(wodModel);
+  }
 }

@@ -52,6 +52,19 @@ class WodModel extends WodEntity {
       exercises: exercises,
       level: level,
       description: description,
+      title: title,
+      createdBy: createdBy,
+    );
+  }
+
+  static WodModel fromEntity(WodEntity wod) {
+    return WodModel(
+      id: wod.id,
+      exercises: wod.exercises,
+      level: wod.level,
+      description: wod.description,
+      title: wod.title,
+      createdBy: wod.createdBy,
     );
   }
 }

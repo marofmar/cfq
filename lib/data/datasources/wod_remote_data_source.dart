@@ -6,6 +6,7 @@ abstract class WodRemoteDataSource {
   Future<List<WodModel>> getWodByDate(DateTime date);
   Future<WodModel> getWodBySpecificDate(String datePath);
   Future<bool> postRecord(RecordEntity record);
+  Future<void> postWodBySpecificDate(WodModel wodModel);
 }
 
 class WodRemoteDataSourceImpl implements WodRemoteDataSource {
@@ -75,5 +76,10 @@ class WodRemoteDataSourceImpl implements WodRemoteDataSource {
       print('Error posting record: $e');
       return false;
     }
+  }
+
+  @override
+  Future<void> postWodBySpecificDate(WodModel wodModel) async {
+    await firestore.collection('wods').doc(wodModel.id).set(wodModel.toJson());
   }
 }
