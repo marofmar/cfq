@@ -1,3 +1,4 @@
+import 'package:cfq/presentation/themes/theme_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cfq/presentation/bloc/navigation_cubit.dart';
@@ -10,6 +11,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return BlocBuilder<NavigationCubit, int>(
       builder: (context, state) {
         return BottomNavigationBar(
+          backgroundColor: AppColor.white,
           currentIndex: state,
           onTap: (index) {
             context.read<NavigationCubit>().updateIndex(index);

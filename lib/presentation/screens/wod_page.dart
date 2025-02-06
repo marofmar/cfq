@@ -61,8 +61,10 @@ class _WodPageState extends State<WodPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColor.white,
       appBar: AppBar(
         title: const Text('WOD'),
+        backgroundColor: AppColor.white,
       ),
       body: BlocListener<DateCubit, DateTime>(
         listener: (context, selectedDate) {
@@ -208,13 +210,13 @@ class _WodPageState extends State<WodPage> {
                   return DraggableScrollableSheet(
                     initialChildSize: 0.1, // 초기 크기 (10%)
                     minChildSize: 0.1, // 최소 크기
-                    maxChildSize: 0.6, // 최대 크기 (70%)
+                    maxChildSize: 0.7, // 최대 크기 (70%)
                     builder: (context, scrollController) {
                       return Container(
                         decoration: BoxDecoration(
-                          color: Theme.of(context).cardColor,
+                          color: AppColor.white,
                           borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(16),
+                            top: Radius.circular(40),
                           ),
                           boxShadow: [
                             BoxShadow(
@@ -229,27 +231,33 @@ class _WodPageState extends State<WodPage> {
                           child: Column(
                             children: [
                               // 드래그 핸들과 제목
-                              Column(
-                                children: [
-                                  Container(
-                                    margin:
-                                        const EdgeInsets.symmetric(vertical: 8),
-                                    width: 40,
-                                    height: 4,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[300],
-                                      borderRadius: BorderRadius.circular(2),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 8.0,
+                                  bottom: 8.0,
+                                ),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      width: 40,
+                                      height: 6,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[300],
+                                        borderRadius: BorderRadius.circular(2),
+                                      ),
                                     ),
-                                  ),
-                                  const Text(
-                                    'WOD 기록 입력',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
+                                    const Text(
+                                      'WOD 기록 입력',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                ],
+                                    const SizedBox(height: 8),
+                                  ],
+                                ),
                               ),
                               // 기존 RecordInputForm
                               RecordInputForm(

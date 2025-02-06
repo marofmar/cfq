@@ -16,6 +16,7 @@ class MyPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColor.white,
       appBar: AppBar(
+        backgroundColor: AppColor.white,
         title: const Text('My Page'),
       ),
       body: BlocBuilder<UserCubit, UserState>(

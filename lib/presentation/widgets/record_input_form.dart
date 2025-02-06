@@ -1,3 +1,4 @@
+import 'package:cfq/presentation/themes/theme_color.dart';
 import 'package:flutter/material.dart';
 
 class RecordInputForm extends StatelessWidget {
@@ -22,68 +23,76 @@ class RecordInputForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextField(
-            controller: nameController,
-            decoration: const InputDecoration(labelText: 'Name'),
-          ),
-          const SizedBox(height: 8),
-          DropdownButtonFormField<String>(
-            value: selectedGender,
-            items: ['male', 'female']
-                .map((gender) => DropdownMenuItem(
-                      value: gender,
-                      child: Text(gender),
-                    ))
-                .toList(),
-            onChanged: onGenderChanged,
-            decoration: const InputDecoration(labelText: 'Gender'),
-          ),
-          const SizedBox(height: 8),
-          DropdownButtonFormField<String>(
-            value: selectedLevel,
-            items: ['rxd', 'a', 'b', 'c']
-                .map((level) => DropdownMenuItem(
-                      value: level,
-                      child: Text(level),
-                    ))
-                .toList(),
-            onChanged: onLevelChanged,
-            decoration: const InputDecoration(labelText: 'Level'),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: recordController,
-            decoration: const InputDecoration(labelText: 'Record'),
-          ),
-          const SizedBox(height: 16),
-          Center(
-            child: ElevatedButton(
-              onPressed: onSubmit,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 12,
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColor.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: 'Name'),
+            ),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              value: selectedGender,
+              items: ['male', 'female']
+                  .map((gender) => DropdownMenuItem(
+                        value: gender,
+                        child: Text(gender),
+                      ))
+                  .toList(),
+              onChanged: onGenderChanged,
+              decoration: const InputDecoration(labelText: 'Gender'),
+            ),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              value: selectedLevel,
+              items: ['rxd', 'a', 'b', 'c']
+                  .map((level) => DropdownMenuItem(
+                        value: level,
+                        child: Text(level),
+                      ))
+                  .toList(),
+              onChanged: onLevelChanged,
+              decoration: const InputDecoration(labelText: 'Level'),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: recordController,
+              decoration: const InputDecoration(labelText: 'Record'),
+            ),
+            const SizedBox(height: 16),
+            Center(
+              child: ElevatedButton(
+                onPressed: onSubmit,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColor.mint,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: const Text(
-                'Submit record',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                child: const Text(
+                  '회원 기록 제출',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppColor.white,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-        ],
+            const SizedBox(height: 5),
+          ],
+        ),
       ),
     );
   }

@@ -28,7 +28,11 @@ class RankingPage extends StatelessWidget {
               context.read<RankingCubit>().fetchRanking(formattedDate);
             },
             child: Scaffold(
-              appBar: AppBar(title: const Text('Ranking')),
+              backgroundColor: AppColor.white,
+              appBar: AppBar(
+                title: const Text('Ranking'),
+                backgroundColor: AppColor.white,
+              ),
               body: Column(
                 children: [
                   BlocBuilder<DateCubit, DateTime>(
