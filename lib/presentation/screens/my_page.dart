@@ -14,6 +14,7 @@ class MyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColor.white,
       appBar: AppBar(
         title: const Text('My Page'),
       ),
@@ -32,92 +33,166 @@ class MyPage extends StatelessWidget {
             return const Center(child: Text('No user data'));
           }
 
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          user.name,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        // const SizedBox(height: 8),
-                        // Text(
-                        //   'Phone: ${user.phoneNumber}',
-                        //   style: Theme.of(context).textTheme.titleMedium,
-                        // ),
-                        Spacer(),
-                        const SizedBox(height: 8),
-                        Card(
-                          color: AppColor.mint,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              '${_formatRole(user.role)}',
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    //color: AppColor.grey1,
+                    ),
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(width: 20),
+                      Text(
+                        user.name,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      // const SizedBox(height: 8),
+                      // Text(
+                      //   'Phone: ${user.phoneNumber}',
+                      //   style: Theme.of(context).textTheme.titleMedium,
+                      // ),
+                      Spacer(),
+                      const SizedBox(height: 8),
+                      Card(
+                        color: AppColor.mint,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            '${_formatRole(user.role)}',
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 30),
+              FlutterCarousel(
+                options: FlutterCarouselOptions(
+                  height: 200.0,
+                  showIndicator: true,
+                  slideIndicator: CircularSlideIndicator(
+                    slideIndicatorOptions: SlideIndicatorOptions(
+                      /// The alignment of the indicator.
+                      alignment: Alignment.bottomCenter,
+                      currentIndicatorColor: AppColor.mint,
+                    ),
+                  ),
+                ),
+                items: [
+                  CarouselItem(
+                    imagePath:
+                        'https://cafe.naver.com/common/storyphoto/viewer.html?src=https%3A%2F%2Fcafeptthumb-phinf.pstatic.net%2FMjAyNTAyMDJfMTcg%2FMDAxNzM4NDY2NzQxMDE1.O3AR2IUwhgNK1CuHIioQ8viiyE5vJ2KCbpvfH3oHVgsg.aoxsifoXUZvYt2SfKs_vSAwMPsJj1G0xRwyNvOcokyUg.JPEG%2FIMG_8055.JPG%3Ftype%3Dw1600',
+                    isNetworkImage: true,
+                  ),
+                  CarouselItem(
+                    imagePath:
+                        'https://cafe.naver.com/common/storyphoto/viewer.html?src=https%3A%2F%2Fcafeptthumb-phinf.pstatic.net%2FMjAyNDA5MTNfOTAg%2FMDAxNzI2MjAwNjE4NTY4.oFtGHMa0jHp1H_n7AgiMAHPE3xd7GJ5RVmiu7FEWNcog.3Br1Y8gEBLK3wMFYAK9Q_-pMqGSdWFmwiF5T1okQOjQg.JPEG%2FKakaoTalk_20240913_125101878.jpg%3Ftype%3Dw1600',
+                    isNetworkImage: true,
+                  ),
+                  CarouselItem(
+                    imagePath:
+                        'https://cafe.naver.com/common/storyphoto/viewer.html?src=https%3A%2F%2Fcafeptthumb-phinf.pstatic.net%2FMjAyNDA3MzBfMzgg%2FMDAxNzIyMzE2MDQyNTYw.-cynDtyK84Ri2pIAIQeKl90zJ0d719c7wWhgy8jfLdMg.TgoZrz5oL7FQS5n0inubPd46nCPpyoAgEjY8dcsRJrUg.JPEG%2FIMG_4323.JPG%3Ftype%3Dw1600',
+                    isNetworkImage: true,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/rm');
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColor.grey1,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/icons/nrm.png',
+                          width: 24,
+                          height: 24,
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          '나의 n-RM 기록',
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
-                FlutterCarousel(
-                  options: FlutterCarouselOptions(
-                    height: 200.0,
-                    showIndicator: true,
-                    slideIndicator: CircularSlideIndicator(
-                      slideIndicatorOptions: SlideIndicatorOptions(
-                        /// The alignment of the indicator.
-                        alignment: Alignment.bottomCenter,
-                        currentIndicatorColor: AppColor.mint,
-                      ),
+              ),
+              const SizedBox(height: 16), // 버튼 사이 간격
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: GestureDetector(
+                  onTap: () {
+                    // TODO: 회원권 정보 페이지로 이동
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('준비 중인 기능입니다.')),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColor.grey1,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/icons/membership.png',
+                          width: 24,
+                          height: 24,
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          '나의 회원권 정보',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ],
                     ),
                   ),
-                  items: [
-                    CarouselItem(
-                      imagePath:
-                          'https://cafe.naver.com/common/storyphoto/viewer.html?src=https%3A%2F%2Fcafeptthumb-phinf.pstatic.net%2FMjAyNTAyMDJfMTcg%2FMDAxNzM4NDY2NzQxMDE1.O3AR2IUwhgNK1CuHIioQ8viiyE5vJ2KCbpvfH3oHVgsg.aoxsifoXUZvYt2SfKs_vSAwMPsJj1G0xRwyNvOcokyUg.JPEG%2FIMG_8055.JPG%3Ftype%3Dw1600',
-                      isNetworkImage: true,
-                    ),
-                    CarouselItem(
-                      imagePath:
-                          'https://cafe.naver.com/common/storyphoto/viewer.html?src=https%3A%2F%2Fcafeptthumb-phinf.pstatic.net%2FMjAyNDA5MTNfOTAg%2FMDAxNzI2MjAwNjE4NTY4.oFtGHMa0jHp1H_n7AgiMAHPE3xd7GJ5RVmiu7FEWNcog.3Br1Y8gEBLK3wMFYAK9Q_-pMqGSdWFmwiF5T1okQOjQg.JPEG%2FKakaoTalk_20240913_125101878.jpg%3Ftype%3Dw1600',
-                      isNetworkImage: true,
-                    ),
-                    CarouselItem(
-                      imagePath:
-                          'https://cafe.naver.com/common/storyphoto/viewer.html?src=https%3A%2F%2Fcafeptthumb-phinf.pstatic.net%2FMjAyNDA3MzBfMzgg%2FMDAxNzIyMzE2MDQyNTYw.-cynDtyK84Ri2pIAIQeKl90zJ0d719c7wWhgy8jfLdMg.TgoZrz5oL7FQS5n0inubPd46nCPpyoAgEjY8dcsRJrUg.JPEG%2FIMG_4323.JPG%3Ftype%3Dw1600',
-                      isNetworkImage: true,
-                    ),
-                  ],
                 ),
-                const SizedBox(height: 24),
-                Center(
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/rm');
-                    },
-                    icon: const Icon(Icons.fitness_center),
-                    label: const Text('View RM Records'),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           );
         },
       ),
