@@ -3,7 +3,6 @@ import 'package:cfq/domain/entities/app_error.dart';
 import 'package:cfq/domain/entities/update_rm_params.dart';
 import 'package:cfq/domain/entities/user_entity.dart';
 import 'package:cfq/domain/repositories/user_repository.dart';
-import 'package:cfq/domain/usecases/update_user_rm.dart';
 import 'package:dartz/dartz.dart';
 
 class UserRepositoryImpl implements UserRepository {

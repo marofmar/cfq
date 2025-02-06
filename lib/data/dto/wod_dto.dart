@@ -6,6 +6,7 @@ class WodModel extends WodEntity {
   final Map<String, dynamic> level;
   final String description;
   final String? title;
+  final String? createdBy;
 
   WodModel({
     required this.id,
@@ -13,11 +14,14 @@ class WodModel extends WodEntity {
     required this.level,
     required this.description,
     this.title,
+    this.createdBy,
   }) : super(
           id: id,
           exercises: exercises,
           level: level,
           description: description,
+          title: title,
+          createdBy: createdBy,
         );
 
   factory WodModel.fromJson(Map<String, dynamic> json) {
@@ -27,6 +31,7 @@ class WodModel extends WodEntity {
       level: Map<String, dynamic>.from(json['level']),
       description: json['description'],
       title: json['title'],
+      createdBy: json['createdBy'],
     );
   }
 
@@ -37,6 +42,7 @@ class WodModel extends WodEntity {
       'level': level,
       'description': description,
       'title': title,
+      'createdBy': createdBy,
     };
   }
 
